@@ -66,41 +66,42 @@ namespace Tamaris.Web.Pages.Users
         protected async Task HandleValidSubmit()
         {
             Saved = false;
-            // TODO:
-            //if (Employee.Username == 0) //new
-            //{
-            //    if (selectedFiles != null)//take first image
-            //    {
-            //        var file = selectedFiles[0];
-            //        Stream stream = file.OpenReadStream();
-            //        MemoryStream ms = new MemoryStream();
-            //        await stream.CopyToAsync(ms);
-            //        stream.Close();
 
-            //        Employee.ImageName = file.Name;
-            //        Employee.ImageContent = ms.ToArray();
-            //    }
-            //    var addedEmployee = await AdminDataService.AddEmployee(Employee);
-            //    if (addedEmployee != null)
-            //    {
-            //        StatusClass = "alert-success";
-            //        Message = "New employee added successfully.";
-            //        Saved = true;
-            //    }
-            //    else
-            //    {
-            //        StatusClass = "alert-danger";
-            //        Message = "Something went wrong adding the new employee. Please try again.";
-            //        Saved = false;
-            //    }
-            //}
-            //else
-            //{
-            //    await AdminDataService.UpdateEmployee(Employee);
-            //    StatusClass = "alert-success";
-            //    Message = "Employee updated successfully.";
-            //    Saved = true;
-            //}
+            if (string.IsNullOrEmpty(User.Id)) //new
+            {
+                if (selectedFiles != null)//take first image
+                {
+                    var file = selectedFiles[0];
+                    Stream stream = file.OpenReadStream();
+                    MemoryStream ms = new MemoryStream();
+                    await stream.CopyToAsync(ms);
+                    stream.Close();
+
+                    User.Avatar = ms.ToArray();
+                }
+
+                var userForInsert = Mapper.Map<UserForInsert>(User);
+                var addedEmployee = await AdminDataService.AddUser(userForInsert);
+                if (addedEmployee != null)
+                {
+                    StatusClass = "alert-success";
+                    Message = "New user added successfully.";
+                    Saved = true;
+                }
+                else
+                {
+                    StatusClass = "alert-danger";
+                    Message = "Something went wrong adding the new user. Please try again.";
+                    Saved = false;
+                }
+            }
+            else
+            {
+                await AdminDataService.ModifyUser(User);
+                StatusClass = "alert-success";
+                Message = "User updated successfully.";
+                Saved = true;
+            }
         }
 
         protected void HandleInvalidSubmit()

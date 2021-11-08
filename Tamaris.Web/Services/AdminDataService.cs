@@ -51,6 +51,14 @@ namespace Tamaris.Web.Services
             //return new RegisterResponse { IsRegistrationSuccessful = true };
         }
 
+        public async Task ModifyUser(UserForUpdate user)
+        {
+            var modifyResult = await _httpClient.PutAsJsonAsync($"Admin/Users", user);
+            var modifyContent = await modifyResult.Content.ReadAsStringAsync();
+
+            return;
+        }
+
         public async Task<UserForSelect> DeleteUser(string username)
         {
             var deletionResult = await _httpClient.DeleteAsync($"Admin/Users/{username}");
