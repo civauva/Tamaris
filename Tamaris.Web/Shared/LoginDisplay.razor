@@ -1,0 +1,26 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Tamaris.Web.Services
+
+@inject NavigationManager Navigation
+@inject IAccountService AuthorizerService
+
+<AuthorizeView>
+    <Authorized>
+        Hello, @context.User.Identity?.Name!
+        <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
+    </Authorized>
+    <NotAuthorized>
+        <a href="account/login">Sign in</a>
+        <a href="account/register">Register</a>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code{
+    private async Task BeginSignOut(MouseEventArgs args)
+    {
+        await AuthorizerService.Logout();
+        Navigation.NavigateTo("/", true);
+    }
+}
+

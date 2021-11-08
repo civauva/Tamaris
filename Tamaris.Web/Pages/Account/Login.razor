@@ -1,0 +1,80 @@
+﻿@page "/account/login"
+
+@using Tamaris.Domains.Authorization
+@using Tamaris.Web.Services
+
+@attribute [AllowAnonymous]
+
+@layout AuthenticationLayout
+@inject NavigationManager navigationManager
+@inject IAccountService authenticationService
+
+
+<EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="loginRequest">
+    <DataAnnotationsValidator />
+
+<div class="main-form">
+    <div class="text-center">
+        <div class="form-signin">
+            <img class="mb-4" src="/images/tamaris_logo.png" alt="" width="72" height="57">
+            <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+
+            <div class="form-floating">
+                <input type="text" class="form-control" id="inputUsername" autofocus placeholder="Username" @bind="loginRequest.UserName">
+                <label for="inputUsername">Username:</label>
+                <ValidationMessage For="@(() => loginRequest.UserName)" />
+            </div>
+
+            <div class="form-floating">
+                <input type="password" class="form-control" id="inputPassword" placeholder="Password" @bind="loginRequest.Password" />
+                <label for="inputPassword">Password:</label>
+                <ValidationMessage For="@(() => loginRequest.Password)" />
+            </div>
+
+            <div class="checkbox mb-3">
+                <a href="/account/forgotpassword">Forgot Password?</a>
+            </div>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+
+            <label class="text-danger mt-3">@error</label>
+
+            <p class="mt-5 mb-3 text-muted">&copy; 2021 by Flower Power Inc.</p>
+        </div>
+    </div>
+</div>
+
+
+</EditForm>
+
+@code
+{
+    LoginRequest loginRequest { get; set; } = new LoginRequest();
+    string error { get; set; }
+
+    async Task OnSubmit()
+    {
+        error = null;
+        try
+        {
+            var result = await authenticationService.Login(loginRequest);
+
+            if (!result.IsAuthorized)
+            {
+                error = result.ErrorMessage;
+            }
+            else
+            {
+                navigationManager.NavigateTo("/", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+
+    private void NavigateToRegisterPage() 
+    { 
+        navigationManager.NavigateTo("account/register"); 
+    }
+}

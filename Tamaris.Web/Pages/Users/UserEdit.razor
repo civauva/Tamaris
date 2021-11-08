@@ -1,0 +1,71 @@
+﻿@page "/users/edit"
+@page "/users/edit/{Username}"
+
+
+@if (!Saved)
+{
+    <section class="user-edit">
+        <h1 class="display-6">Details for @User.FirstName @User.LastName</h1>
+        <EditForm Model="@User" OnValidSubmit="@HandleValidSubmit"
+                  OnInvalidSubmit="@HandleInvalidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary></ValidationSummary>
+
+             <div class="form-group row">
+                <label for="image" class="col-sm-3">Select thumbnail: </label>
+                <InputFile OnChange="OnInputFileChange" multiple />
+            </div>
+
+            <div class="form-group row">
+                <label for="userName" class="col-sm-3">Username: </label>
+                <input @ref="UserNameInput" id="userName" class="form-control col-sm-8" @bind="@User.Username" />
+                <ValidationMessage class="offset-sm-3 col-sm-8" For="@(() => User.Username)" />
+            </div>
+
+
+            <div class="form-group row">
+                <label for="lastName" class="col-sm-3">Last name: </label>
+                @*<InputText id="lastName" class="form-control col-sm-8" @bind-Value="@User.LastName" placeholder="Enter last name"></InputText>*@
+                <input id="lastName" class="form-control col-sm-8" @bind="@User.LastName" />
+                <ValidationMessage class="offset-sm-3 col-sm-8" For="@(() => User.LastName)" />
+            </div>
+
+            <div class="form-group row">
+                <label for="firstName" class="col-sm-3">First name: </label>
+                <InputText id="firstName" class="form-control col-sm-8" @bind-Value="@User.FirstName" placeholder="Enter first name"></InputText>
+                <ValidationMessage class="offset-sm-3 col-sm-8" For="@(() => User.FirstName)" />
+            </div>
+
+
+            <div class="form-group row">
+                <label for="email" class="col-sm-3">Email: </label>
+                <InputText id="email" class="form-control col-sm-8" @bind-Value="@User.Email" placeholder="Enter email"></InputText>
+                <ValidationMessage class="offset-sm-3 col-sm-8" For="@(() => User.Email)" />
+            </div>
+
+
+            <div class="form-group row">
+                <label for="company" class="col-sm-3">Company: </label>
+                <InputText id="company" class="form-control col-sm-8" @bind-Value="@User.Company" placeholder="Enter company name"></InputText>
+                <ValidationMessage class="offset-sm-3 col-sm-8" For="@(() => User.Company)" />
+            </div>
+
+
+            <button type="submit" class="btn btn-primary edit-btn">Save user</button>
+
+            @if (string.IsNullOrEmpty(User.Id))
+            {
+                <a class="btn btn-danger" @onclick="@DeleteUser">
+                    Delete
+                </a>
+            }
+
+            <a class="btn btn-outline-primary" @onclick="@NavigateToOverview">Back to overview</a>
+        </EditForm>
+    </section>
+
+}
+else
+{
+    <div class="alert @StatusClass">@Message</div>
+}

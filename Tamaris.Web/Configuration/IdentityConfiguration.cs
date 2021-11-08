@@ -1,0 +1,28 @@
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using Tamaris.Web.Services;
+
+namespace Tamaris.Web.Configuration
+{
+    public class IdentityConfiguration
+    {
+        internal static void Configure(IServiceCollection services)
+        {
+            // Authentication/Authorization part
+            services.AddAuthorizationCore();
+            services.AddScoped<CustomStateProvider>();
+            services.AddScoped<AuthenticationStateProvider, CustomStateProvider>();
+            services.AddScoped<IAccountService, AccountService>();
+
+            // This would have been alternative:
+
+            //builder.Services.AddOidcAuthentication(options =>
+            //{
+            //    // Configure your authentication provider options here.
+            //    // For more information, see https://aka.ms/blazor-standalone-auth
+            //    builder.Configuration.Bind("Local", options.ProviderOptions);
+            //});
+
+            // But we are going the JWT way
+        }
+    }
+}

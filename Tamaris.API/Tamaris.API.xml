@@ -1,0 +1,341 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tamaris.API</name>
+    </assembly>
+    <members>
+        <member name="M:Tamaris.API.Configuration.CommonParameterOperationFilter.IsControllerQualified(System.String)">
+            <summary>
+            We decide if the controller is qualified by the group it belongs to.
+            If another logic is reqired, this is the place to adopt it.
+            </summary>
+        </member>
+        <member name="T:Tamaris.API.Configuration.IocConfiguration">
+            <summary>
+            Inversion Of Control (Dependency Injection) start-up configuration.
+            </summary>	
+        </member>
+        <member name="M:Tamaris.API.Configuration.IocConfiguration.SetupDependencies(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configures the IoC/DI classes.
+            </summary>
+            <param name="configuration">The configuration.</param>
+            <param name="services">The services.</param>
+        </member>
+        <member name="M:Tamaris.API.Configuration.SwaggerConfiguration.RegisterSwagger(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Register the Swagger generator, defining 1 or more Swagger documents
+            </summary>
+        </member>
+        <member name="M:Tamaris.API.Configuration.SwaggerConfiguration.UseSwagger(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Enable middleware to serve generated Swagger as a JSON endpoint
+            </summary>
+        </member>
+        <member name="M:Tamaris.API.Configuration.SwaggerConfiguration.GetBuildDateTime(System.Reflection.Assembly)">
+            <summary>
+            Extension method that returns the creation time of the given assembly
+            </summary>
+            <param name="assembly"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tamaris.API.Controllers.Admin.RolesController.Get(Tamaris.Domains.DataShaping.QueryParameters,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Gets paging list with all roles
+            </summary>
+            <remarks>With pagination, you can optimize fetching the roles. For example, you can fetch 100 pages with 10 pages per page or 10 pages with 100 roles per page.
+            Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
+            with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
+            </remarks>
+            <param name="parameters">Query parameters</param>
+            <param name="searchString">Search anything in the given roles list. Search is performed against all searchable fields.</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <returns></returns>
+            <response code="200">Returns list of selected roles</response>
+            <response code="204">If there are no roles for given PageIndex/PageSize/SearchString combination</response>
+            <response code="401">If the user is not authorized to access this resource</response>
+        </member>
+        <member name="M:Tamaris.API.Controllers.Admin.RolesController.GetRole(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Gets single role
+            </summary>
+            <remarks>This method returns role with given key</remarks>
+            <param name="id">The key of the role we want to fetch</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <response code="200">Returns found role</response>
+            <response code="204">If there is no role found for given key</response>   
+        </member>
+        <member name="M:Tamaris.API.Controllers.Admin.RolesController.CreateRole(Tamaris.Domains.Admin.RoleForInsert,System.Threading.CancellationToken)">
+            <summary>
+            Creates role
+            </summary>
+            <remarks>This method adds new role.</remarks>
+            <param name="role">JSON parsed object we want to insert</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <returns>Newly created role, as it is stored in the database.</returns>
+            <response code="201">If creation of the role was successful.</response>
+            <response code="400">If passed role was null or the creation of the role was not successful.</response>   
+            <response code="422">If the validation of passed role failed.</response>   
+        </member>
+        <member name="M:Tamaris.API.Controllers.Admin.RolesController.UpdateRole(System.String,Tamaris.Domains.Admin.RoleForUpdate,System.Threading.CancellationToken)">
+            <summary>
+            "Upserts" role (updates it if role exists or it creates new if it doesn't exist)
+            </summary>
+            <remarks>This method updates role with the form data if the role is found in the database, or it creates new role if it is not found.</remarks>
+            <param name="id">The key of the role we want to fetch</param>
+            <param name="role">JSON parsed object we want to update/insert</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <response code="201">If role was not found and its creation was successful.</response>
+            <response code="204">If update of the role was successful.</response>
+            <response code="400">If upsertion of the role was not successful.</response>   
+            <response code="422">If the validation of role failed.</response>   
+        </member>
+        <member name="M:Tamaris.API.Controllers.Admin.RolesController.DeleteRole(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes role
+            </summary>
+            <remarks>This method deletes role with specified id.</remarks>
+            <param name="id">The key of the role we want to fetch</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <response code="200">If deletion of the role was successful.</response>
+            <response code="400">If deletion of the role was not successful.</response>   
+            <response code="404">If the role was not found.</response>   
+        </member>
+        <member name="M:Tamaris.API.Controllers.Admin.RolesController.GetAdminUsersForSelectForRoles(System.Int32,Tamaris.Domains.DataShaping.QueryParameters,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Gets paging list with all users (ForSelect) for given role
+            </summary>
+            <remarks>With pagination, you can optimize fetching the users. For example, you can fetch 100 pages with 30 pages per page or 30 pages with 100 users per page.
+            Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
+            with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
+            </remarks>
+            <param name="id">The key of the role we want to fetch the users for</param>
+            <param name="parameters">Query parameters</param>
+            <param name="searchString">Search anything in the given users list. Search is performed against all searchable fields.</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <returns></returns>
+            <response code="200">Returns list of selected users</response>
+            <response code="204">If there are no users for given pageIndex/pageSize/searchString combination</response>   
+            <response code="401">If the user is not authorized to access this resource</response>
+        </member>
+        <member name="M:Tamaris.API.Controllers.Admin.UsersController.Get(Tamaris.Domains.DataShaping.QueryParameters,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Gets paging list with all users
+            </summary>
+            <remarks>With pagination, you can optimize fetching the users. For example, you can fetch 100 pages with 10 pages per page or 10 pages with 100 users per page.
+            Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
+            with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
+            </remarks>
+            <param name="parameters">Query parameters</param>
+            <param name="searchString">Search anything in the given users list. Search is performed against all searchable fields.</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <returns></returns>
+            <response code="200">Returns list of selected users</response>
+            <response code="204">If there are no users for given PageIndex/PageSize/SearchString combination</response>
+            <response code="401">If the user is not authorized to access this resource</response>
+        </member>
+        <member name="M:Tamaris.API.Controllers.Admin.UsersController.GetUser(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Gets single user
+            </summary>
+            <remarks>This method returns user with given key</remarks>
+            <param name="id">The key of the user we want to fetch</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <response code="200">Returns found user</response>
+            <response code="204">If there is no user found for given key</response>   
+        </member>
+        <member name="M:Tamaris.API.Controllers.Admin.UsersController.CreateUser(Tamaris.Domains.Admin.UserForInsert,System.Threading.CancellationToken)">
+            <summary>
+            Creates user
+            </summary>
+            <remarks>This method adds new user.</remarks>
+            <param name="user">JSON parsed object we want to insert</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <returns>Newly created user, as it is stored in the database.</returns>
+            <response code="201">If creation of the user was successful.</response>
+            <response code="400">If passed user was null or the creation of the user was not successful.</response>   
+            <response code="422">If the validation of passed user failed.</response>   
+        </member>
+        <member name="M:Tamaris.API.Controllers.Admin.UsersController.UpdateUser(System.String,Tamaris.Domains.Admin.UserForUpdate,System.Threading.CancellationToken)">
+            <summary>
+            "Upserts" user (updates it if user exists or it creates new if it doesn't exist)
+            </summary>
+            <remarks>This method updates user with the form data if the user is found in the database, or it creates new user if it is not found.</remarks>
+            <param name="id">The key of the user we want to fetch</param>
+            <param name="user">JSON parsed object we want to update/insert</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <response code="201">If user was not found and its creation was successful.</response>
+            <response code="204">If update of the user was successful.</response>
+            <response code="400">If upsertion of the user was not successful.</response>   
+            <response code="422">If the validation of user failed.</response>   
+        </member>
+        <member name="M:Tamaris.API.Controllers.Admin.UsersController.DeleteUser(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes user
+            </summary>
+            <remarks>This method deletes user with specified id.</remarks>
+            <param name="id">The key of the user we want to fetch</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <response code="200">If deletion of the user was successful.</response>
+            <response code="400">If deletion of the user was not successful.</response>   
+            <response code="404">If the user was not found.</response>   
+        </member>
+        <member name="M:Tamaris.API.Controllers.Admin.UsersController.GetAdminRolesForSelectForUsers(System.Int32,Tamaris.Domains.DataShaping.QueryParameters,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Gets paging list with all roles (ForSelect) for given user
+            </summary>
+            <remarks>With pagination, you can optimize fetching the roles. For example, you can fetch 100 pages with 30 pages per page or 30 pages with 100 roles per page.
+            Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
+            with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
+            </remarks>
+            <param name="id">The key of the user we want to fetch the roles for</param>
+            <param name="parameters">Query parameters</param>
+            <param name="searchString">Search anything in the given roles list. Search is performed against all searchable fields.</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <returns></returns>
+            <response code="200">Returns list of selected roles</response>
+            <response code="204">If there are no roles for given pageIndex/pageSize/searchString combination</response>   
+            <response code="401">If the user is not authorized to access this resource</response>
+        </member>
+        <member name="M:Tamaris.API.Controllers.Admin.UsersController.GetMsgMessagesForSelectForReceiverUserForReceiverUser(System.String,Tamaris.Domains.DataShaping.QueryParameters,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Gets paging list with all messages (ForSelect) for given user
+            </summary>
+            <remarks>With pagination, you can optimize fetching the messages. For example, you can fetch 100 pages with 30 pages per page or 30 pages with 100 messages per page.
+            Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
+            with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
+            </remarks>
+            <param name="id">The key of the user we want to fetch the messages for</param>
+            <param name="parameters">Query parameters</param>
+            <param name="searchString">Search anything in the given messages list. Search is performed against all searchable fields.</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <returns></returns>
+            <response code="200">Returns list of selected messages</response>
+            <response code="204">If there are no messages for given pageIndex/pageSize/searchString combination</response>   
+            <response code="401">If the user is not authorized to access this resource</response>
+        </member>
+        <member name="M:Tamaris.API.Controllers.Admin.UsersController.GetMsgMessagesForSelectForSenderUserForSenderUser(System.String,Tamaris.Domains.DataShaping.QueryParameters,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Gets paging list with all messages (ForSelect) for given user
+            </summary>
+            <remarks>With pagination, you can optimize fetching the messages. For example, you can fetch 100 pages with 30 pages per page or 30 pages with 100 messages per page.
+            Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
+            with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
+            </remarks>
+            <param name="id">The key of the user we want to fetch the messages for</param>
+            <param name="parameters">Query parameters</param>
+            <param name="searchString">Search anything in the given messages list. Search is performed against all searchable fields.</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <returns></returns>
+            <response code="200">Returns list of selected messages</response>
+            <response code="204">If there are no messages for given pageIndex/pageSize/searchString combination</response>   
+            <response code="401">If the user is not authorized to access this resource</response>
+        </member>
+        <member name="M:Tamaris.API.Controllers.BaseController.CreatePagingHeader``1(Tamaris.Domains.DataShaping.PaginatedList{``0}@)">
+            <summary>
+            Creates pagination header that the client can use to navigate through paginated list
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="paginatedList">Parameter that contains all neccessary information</param>
+        </member>
+        <member name="P:Tamaris.API.Controllers.BaseController.UserId">
+            <summary>
+            Used only in conjuction with Authorization and Policy
+            </summary>
+        </member>
+        <member name="M:Tamaris.API.Controllers.BaseController.TrySetProperty(System.Object,System.String,System.Object)">
+            <summary>
+            This method is certainly not the speed champion, but it provides us with the possibility to write something like this:
+            TrySetProperty(contact, "CreatedOn", DateTime.Now);
+            </summary>
+        </member>
+        <member name="M:Tamaris.API.Controllers.BaseController.ManipulateOnCreate(System.Object)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Tamaris.API.Controllers.BaseController.ManipulateOnUpdate(System.Object)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.Get(Tamaris.Domains.DataShaping.QueryParameters,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Gets paging list with all messages
+            </summary>
+            <remarks>With pagination, you can optimize fetching the messages. For example, you can fetch 100 pages with 10 pages per page or 10 pages with 100 messages per page.
+            Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
+            with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
+            </remarks>
+            <param name="parameters">Query parameters</param>
+            <param name="searchString">Search anything in the given messages list. Search is performed against all searchable fields.</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <returns></returns>
+            <response code="200">Returns list of selected messages</response>
+            <response code="204">If there are no messages for given PageIndex/PageSize/SearchString combination</response>
+            <response code="401">If the user is not authorized to access this resource</response>
+        </member>
+        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.GetMessage(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Gets single message
+            </summary>
+            <remarks>This method returns message with given key</remarks>
+            <param name="id">The key of the message we want to fetch</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <response code="200">Returns found message</response>
+            <response code="204">If there is no message found for given key</response>   
+        </member>
+        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.CreateMessage(Tamaris.Domains.Msg.MessageForInsert,System.Threading.CancellationToken)">
+            <summary>
+            Creates message
+            </summary>
+            <remarks>This method adds new message.</remarks>
+            <param name="message">JSON parsed object we want to insert</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <returns>Newly created message, as it is stored in the database.</returns>
+            <response code="201">If creation of the message was successful.</response>
+            <response code="400">If passed message was null or the creation of the message was not successful.</response>   
+            <response code="422">If the validation of passed message failed.</response>   
+        </member>
+        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.UpdateMessage(System.Int32,Tamaris.Domains.Msg.MessageForUpdate,System.Threading.CancellationToken)">
+            <summary>
+            "Upserts" message (updates it if message exists or it creates new if it doesn't exist)
+            </summary>
+            <remarks>This method updates message with the form data if the message is found in the database, or it creates new message if it is not found.</remarks>
+            <param name="id">The key of the message we want to fetch</param>
+            <param name="message">JSON parsed object we want to update/insert</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <response code="201">If message was not found and its creation was successful.</response>
+            <response code="204">If update of the message was successful.</response>
+            <response code="400">If upsertion of the message was not successful.</response>   
+            <response code="422">If the validation of message failed.</response>   
+        </member>
+        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.DeleteMessage(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Deletes message
+            </summary>
+            <remarks>This method deletes message with specified id.</remarks>
+            <param name="id">The key of the message we want to fetch</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <response code="200">If deletion of the message was successful.</response>
+            <response code="400">If deletion of the message was not successful.</response>   
+            <response code="404">If the message was not found.</response>   
+        </member>
+        <member name="T:Tamaris.API.Infrastructure.ApiExplorerVersionConvention">
+            <summary>
+            This class is used to tell the swagger what class(es) should be grouped within the 
+            choosen Swagger document. Used in conjuction with SwaggerConfiguration.cs class.
+            </summary>
+        </member>
+        <member name="M:Tamaris.API.Infrastructure.ReflectionHelper.GetCurrentMethod(System.Int32)">
+            <summary>
+            Delivers fully qualified name of the calling method based upon the stackFrameIndex
+            </summary>
+            <param name="stackFrameIndex">Depth of the stack. For example if you expect that the caller is on the 3rd level from this method, you should pass here number 3.</param>
+            <returns>Name of the caller method.</returns>
+        </member>
+        <member name="T:Tamaris.API.Services.Email.EmailSender">
+            <summary>
+            https://code-maze.com/password-reset-aspnet-core-identity/
+            </summary>
+        </member>
+    </members>
+</doc>
