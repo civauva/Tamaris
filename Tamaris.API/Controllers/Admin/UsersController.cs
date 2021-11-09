@@ -12,7 +12,7 @@ using Tamaris.Domains.Msg;
 using Tamaris.Entities.Admin;
 using Tamaris.DAL.Interfaces;
 using Tamaris.API.Infrastructure.Attributes;
-
+using Microsoft.AspNetCore.Identity;
 
 namespace Tamaris.API.Controllers.Admin
 {
@@ -22,14 +22,16 @@ namespace Tamaris.API.Controllers.Admin
 	{
 		private readonly ITamarisUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
+		private readonly UserManager<User> _userManager;
+
 
 		private readonly string _defaultGetSingleRoute = "GetAdminsUser";
 
-		public UsersController(ITamarisUnitOfWork unitOfWork, IMapper mapper)
+		public UsersController(ITamarisUnitOfWork unitOfWork, IMapper mapper, UserManager<User> userManager)
 		{
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
-
+			_userManager = userManager;
 		}
 
 
@@ -203,10 +205,19 @@ namespace Tamaris.API.Controllers.Admin
 				// If there is a need to manipulate the object, this is the place to do it
 				ManipulateOnCreate(userEntity);
 
-				// Add it to UnitOfWork
-				_unitOfWork.UsersRepository.Add(userEntity);
+				// Instead of storing the user using UnitOfWork we are using UserManager first
+				// to enforce hashing and the rest of identity stuff
+				var result = await _userManager.CreateAsync(userEntity, user.Password);
+				if (!result.Succeeded)
+				{
+					var errors = result.Errors.Select(e => e.Description);
+					return BadRequest(errors);
+				}
 
-				// Try to save it
+				var userFromRepo = await _unitOfWork.UsersRepository.GetByUsernameAsync(user.Username);
+				_mapper.Map(userEntity, userFromRepo);
+
+				// Now, try to save it
 				if (!await _unitOfWork.SaveAsync(cancellationToken))
 				{
 					LogMethodCreateSaveFailed(userEntity);

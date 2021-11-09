@@ -94,6 +94,11 @@ namespace Tamaris.DAL.Repositories.Admin
 			return new PaginatedList<UserForSelect>(items, count, parameters.PageIndex, parameters.PageSize);
 		}
 
+		public async Task<User> GetByUsernameAsync(string username, CancellationToken cancellationToken = default)
+		{
+			return await TamarisDbContext.Users.FirstOrDefaultAsync(q => q.UserName == username, cancellationToken);
+		}
+
 		public async Task<UserForSelect> GetForSelectWithIdAsync(string id, CancellationToken cancellationToken = default)
 		{
 			return await UserForSelects.FirstOrDefaultAsync(q => q.Id == id, cancellationToken);
@@ -126,10 +131,9 @@ namespace Tamaris.DAL.Repositories.Admin
 			return null;
 		}
 
+        #endregion Special methods (usually for nested Get API calls)
 
-		#endregion Special methods (usually for nested Get API calls)
+        #endregion Explicit ForSelect methods
 
-		#endregion Explicit ForSelect methods
-
-	}
+    }
 }

@@ -5,10 +5,11 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="titleLabel">User Quick Add</h5>
-@*                    <button type="button" class="close" @onclick="@Close" data-dismiss="modal" aria-label="Close">
+                    @*                    <button type="button" class="close" @onclick="@Close" data-dismiss="modal" aria-label="Close">
                         <i class="fas window-close"></i>
-                    </button>
-*@                </div>
+                        </button>
+                    *@
+                </div>
                 <div class="modal-body edit-form">
 
                     <EditForm Model="@User" OnValidSubmit="@HandleValidSubmit">
@@ -50,6 +51,17 @@
                             <input type="text" class="form-control textbox-alone" id="inputCompany" placeholder="Company" @bind="User.Company" />
                             <label for="inputCompany">Company:</label>
                             <ValidationMessage For="@(() => User.Company)" />
+                        </div>
+
+                        <div class="card" style="width: 25rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">Avatar</h5>
+                                <InputFile OnChange="OnInputFileChange" single />
+                            </div>
+
+                            <div class="px-3">
+                                <img src="@thumbnail" class="card-img-bottom mb-3" style="border:1px solid #CCCCAA" />
+                            </div>
                         </div>
 
 
