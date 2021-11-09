@@ -49,17 +49,49 @@ namespace Tamaris.Web.Pages.Users
             {
                 var user = await AdminDataService.GetUserByUsername(Username);
                 User = Mapper.Map<UserForUpdate>(user);
+                SetThumbnail();
             }
         }
 
 
-        private IReadOnlyList<IBrowserFile> selectedFiles;
-        private void OnInputFileChange(InputFileChangeEventArgs e)
+        #region Thumbnail
+
+        private async void OnInputFileChange(InputFileChangeEventArgs e)
         {
-            selectedFiles = e.GetMultipleFiles();
-            Message = $"{selectedFiles.Count} file(s) selected";
-            StateHasChanged();
+            var selectedFiles = e.GetMultipleFiles();
+
+            // Thumbnail first
+            if (selectedFiles != null && selectedFiles.Count > 0)
+            {
+                var file = selectedFiles[0]; // take first image
+                if (file != null)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        var stream = file.OpenReadStream();
+                        await stream.CopyToAsync(ms);
+                        stream.Close();
+
+                        User.Avatar = ms.ToArray();
+
+                        SetThumbnail();
+
+                        Message = $"{selectedFiles.Count} file(s) selected";
+                        StateHasChanged();
+                    }
+                }
+            }
         }
+
+        private void SetThumbnail()
+        {
+            // Set the thumbnail
+            var convertedArray = Convert.ToBase64String(User.Avatar);
+            thumbnail = $"data:image/jpg;base64,{convertedArray}";
+        }
+
+        public string thumbnail = "";
+        #endregion Thumbnail
 
 
 
@@ -67,19 +99,8 @@ namespace Tamaris.Web.Pages.Users
         {
             Saved = false;
 
-            if (string.IsNullOrEmpty(User.Id)) //new
+            if (string.IsNullOrEmpty(User.Id)) // new
             {
-                if (selectedFiles != null)//take first image
-                {
-                    var file = selectedFiles[0];
-                    Stream stream = file.OpenReadStream();
-                    MemoryStream ms = new MemoryStream();
-                    await stream.CopyToAsync(ms);
-                    stream.Close();
-
-                    User.Avatar = ms.ToArray();
-                }
-
                 var userForInsert = Mapper.Map<UserForInsert>(User);
                 var addedEmployee = await AdminDataService.AddUser(userForInsert);
                 if (addedEmployee != null)

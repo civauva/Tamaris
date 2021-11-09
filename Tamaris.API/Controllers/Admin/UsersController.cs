@@ -121,6 +121,42 @@ namespace Tamaris.API.Controllers.Admin
 		}
 
 
+		// GET api/UserForSelect/5
+		/// <summary>
+		/// Gets single user by username
+		/// </summary>
+		/// <remarks>This method returns user with given key</remarks>
+		/// <param name="userName">Username of the user we want to fetch</param>
+		/// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+		/// <response code="200">Returns found user</response>
+		/// <response code="204">If there is no user found for given key</response>   
+		[HttpGet("ByUsername/{userName}", Name = "GetAdminsUserByUsername")]
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserForSelect))]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		public async Task<ActionResult<UserForSelect>> GetUserByUsername(string userName, CancellationToken cancellationToken = default)
+		{
+			LogMethodSingleGetterEntry(userName);
+			try
+			{
+				var user = await _unitOfWork.UsersRepository.GetForSelectWithUsernameAsync(userName, cancellationToken);
+
+				if (user == null)
+				{
+					LogMethodSingleGetterNoData(userName);
+					return NoContent(); // No user found with given key
+				}
+
+				LogMethodSingleGetterData(userName);
+				return Ok(user);
+			}
+			catch (TaskCanceledException)
+			{
+				LogVerbose("User cancelled action.");
+				return NoContent();
+			}
+		}
+
+
 		#endregion Getting data
 
 

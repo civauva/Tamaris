@@ -99,6 +99,11 @@ namespace Tamaris.DAL.Repositories.Admin
 			return await UserForSelects.FirstOrDefaultAsync(q => q.Id == id, cancellationToken);
 		}
 
+		public async Task<UserForSelect> GetForSelectWithUsernameAsync(string userName, CancellationToken cancellationToken = default)
+		{
+			return await UserForSelects.FirstOrDefaultAsync(q => q.Username == userName, cancellationToken);
+		}
+
 		#region Special methods (usually for nested Get API calls)
 
 		public async Task<PaginatedList<UserForSelect>> GetPaginatedForSelect_ForRolesAsync(int Id, QueryParameters parameters, string searchString, CancellationToken cancellationToken = default)

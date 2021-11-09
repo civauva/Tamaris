@@ -30,7 +30,7 @@ namespace Tamaris.Web.Services
         public async Task<UserForSelect> GetUserByUsername(string userName)
         {
             return await JsonSerializer.DeserializeAsync<UserForSelect>
-                (await _httpClient.GetStreamAsync($"Admin/Users/{userName}"), _options);
+                (await _httpClient.GetStreamAsync($"Admin/Users/ByUsername/{userName}"), _options);
         }
 
         public async Task<UserForSelect> AddUser(UserForInsert user)
@@ -53,7 +53,7 @@ namespace Tamaris.Web.Services
 
         public async Task ModifyUser(UserForUpdate user)
         {
-            var modifyResult = await _httpClient.PutAsJsonAsync($"Admin/Users", user);
+            var modifyResult = await _httpClient.PutAsJsonAsync($"Admin/Users/{user.Id}", user);
             var modifyContent = await modifyResult.Content.ReadAsStringAsync();
 
             return;
