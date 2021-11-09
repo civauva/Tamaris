@@ -5,37 +5,60 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="titleLabel">User Quick Add</h5>
-                    <button type="button" class="close" @onclick="@Close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+@*                    <button type="button" class="close" @onclick="@Close" data-dismiss="modal" aria-label="Close">
+                        <i class="fas window-close"></i>
                     </button>
-                </div>
-                <div class="modal-body">
+*@                </div>
+                <div class="modal-body edit-form">
 
                     <EditForm Model="@User" OnValidSubmit="@HandleValidSubmit">
 
                         <DataAnnotationsValidator />
                         <ValidationSummary />
 
-                        <div class="form-group">
-                            <label for="username">Username: </label>
-                            <InputText id="username" class="form-control" @bind-Value="@User.Username" placeholder="Enter username"></InputText>
+                        <div class="form-floating">
+                            <input type="text" class="form-control textbox-alone" id="inputUsername" placeholder="Username" @bind="User.Username" />
+                            <label for="inputUsername">Username:</label>
                             <ValidationMessage For="@(() => User.Username)" />
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="email">Email: </label>
-                            <InputText id="email" class="form-control" @bind-Value="@User.Email" placeholder="Enter email"></InputText>
+
+                        <div class="form-floating">
+                            <input type="text" class="form-control textbox-alone" id="inputLastName" placeholder="LastName" @bind="User.LastName" />
+                            <label for="inputLastName">LastName:</label>
+                            <ValidationMessage For="@(() => User.LastName)" />
+                        </div>
+
+                        <div class="form-floating">
+                            <input type="text" class="form-control textbox-alone" id="inputFirstName" placeholder="FirstName" @bind="User.FirstName" />
+                            <label for="inputFirstName">FirstName:</label>
+                            <ValidationMessage For="@(() => User.FirstName)" />
+                        </div>
+
+                        <div class="form-floating">
+                            <input type="email" class="form-control textbox-alone" id="inputEmail" placeholder="E-mail" @bind="User.Email" />
+                            <label for="inputEmail">E-mail:</label>
                             <ValidationMessage For="@(() => User.Email)" />
                         </div>
 
-                        <div class="form-group">
-                            <label for="Company">Company: </label>
-                            <InputText id="company" class="form-control" @bind-Value="@User.Company" placeholder="Enter Company name"></InputText>
+                        <div class="form-floating">
+                            <input type="password" class="form-control textbox-alone" id="inputPassword" placeholder="Password" @bind="User.Password" />
+                            <label for="inputPassword">Password:</label>
+                            <ValidationMessage For="@(() => User.Password)" />
+                        </div>
+
+                        <div class="form-floating">
+                            <input type="text" class="form-control textbox-alone" id="inputCompany" placeholder="Company" @bind="User.Company" />
+                            <label for="inputCompany">Company:</label>
                             <ValidationMessage For="@(() => User.Company)" />
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Save User</button>
-                        <a class="btn btn-outline-primary" @onclick="@Close">Close</a>
+
+
+                        <div class="d-flex justify-content-end mt-3">
+                            <button type="submit" class="btn btn-primary me-1">Save User</button>
+                            <a class="btn btn-outline-primary" @onclick="@Close">Close</a>
+                        </div>
+
                     </EditForm>
 
                 </div>

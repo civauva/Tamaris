@@ -94,9 +94,9 @@ namespace Tamaris.DAL.Repositories.Admin
 			return new PaginatedList<UserForSelect>(items, count, parameters.PageIndex, parameters.PageSize);
 		}
 
-		public async Task<UserForSelect> GetForSelectAsync(string userName, CancellationToken cancellationToken = default)
+		public async Task<UserForSelect> GetForSelectWithIdAsync(string id, CancellationToken cancellationToken = default)
 		{
-			return await UserForSelects.FirstOrDefaultAsync(q => q.Username == userName, cancellationToken);
+			return await UserForSelects.FirstOrDefaultAsync(q => q.Id == id, cancellationToken);
 		}
 
 		#region Special methods (usually for nested Get API calls)

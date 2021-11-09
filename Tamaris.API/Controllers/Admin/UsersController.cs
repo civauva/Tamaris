@@ -102,7 +102,7 @@ namespace Tamaris.API.Controllers.Admin
 			LogMethodSingleGetterEntry(id);
 			try
 			{
-				var user = await _unitOfWork.UsersRepository.GetForSelectAsync(id, cancellationToken);
+				var user = await _unitOfWork.UsersRepository.GetForSelectWithIdAsync(id, cancellationToken);
 
 				if (user == null)
 				{
@@ -152,11 +152,11 @@ namespace Tamaris.API.Controllers.Admin
 
 
 			// Checks the validation in the data annotation of the data model
-			if (!ModelState.IsValid)
-			{
-				LogMethodCreateInvalid(user);
-				return new UnprocessableEntityObjectResult(ModelState);
-			}
+			//if (!ModelState.IsValid)
+			//{
+			//	LogMethodCreateInvalid(user);
+			//	return new UnprocessableEntityObjectResult(ModelState);
+			//}
 
 
 			try
@@ -182,7 +182,7 @@ namespace Tamaris.API.Controllers.Admin
 
 
 				// Finally, get the object from the database, because this is what we want to return
-				var userToReturn  = await _unitOfWork.UsersRepository.GetForSelectAsync(userEntity.Id, cancellationToken);
+				var userToReturn  = await _unitOfWork.UsersRepository.GetForSelectWithIdAsync(userEntity.Id, cancellationToken);
 
 				return CreatedAtRoute(_defaultGetSingleRoute, // nameof(GetUser),
 					new { userEntity.Id },
@@ -255,7 +255,7 @@ namespace Tamaris.API.Controllers.Admin
 					}
 
 					// Finally, get the object from the database, because this is what we want to return
-					var userToReturn  = await _unitOfWork.UsersRepository.GetForSelectAsync(userToCreate.Id, cancellationToken);
+					var userToReturn  = await _unitOfWork.UsersRepository.GetForSelectWithIdAsync(userToCreate.Id, cancellationToken);
 
 					LogMethodUpdateUpsertSuccessful(userToCreate.Id);
 
@@ -327,7 +327,7 @@ namespace Tamaris.API.Controllers.Admin
 
 				// Lets get this guy before we remove it from the database
 				// so that we can return proper object back to the caller of the method.
-				var userForSelect = await _unitOfWork.UsersRepository.GetForSelectAsync(id, cancellationToken);
+				var userForSelect = await _unitOfWork.UsersRepository.GetForSelectWithIdAsync(id, cancellationToken);
 
 
 				_unitOfWork.UsersRepository.Remove(userFromRepo);

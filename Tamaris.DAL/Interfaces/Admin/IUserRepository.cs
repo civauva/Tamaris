@@ -15,7 +15,7 @@ namespace Tamaris.DAL.Interfaces.Admin
 	{
 		Task<IEnumerable<UserForSelect>> GetAllForSelectAsync(CancellationToken cancellationToken = default);
 		Task<PaginatedList<UserForSelect>> GetPaginatedForSelectAsync(QueryParameters parameters, string searchString, CancellationToken cancellationToken = default);
-		Task<UserForSelect> GetForSelectAsync(string username, CancellationToken cancellationToken = default);
+		Task<UserForSelect> GetForSelectWithIdAsync(string username, CancellationToken cancellationToken = default);
 
 		#region Special methods (usually for nested Get API calls)
 

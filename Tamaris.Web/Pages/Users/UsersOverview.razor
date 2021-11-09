@@ -16,7 +16,7 @@ else
             <tr>
                 @*<th></th>*@
                 <th>Username</th>
-                <th>EMail</th>
+                <th>E-mail</th>
                 <th>Company</th>
                 <th></th>
             </tr>
@@ -46,5 +46,7 @@ else
     </table>
 }
 
-<button @onclick="QuickAddUser" class="btn btn-dark table-btn quick-add-btn">&nbsp;&nbsp;+&nbsp;&nbsp;</button>
+<button @onclick="QuickAddUser" class="btn btn-primary table-btn quick-add-btn">
+    <i class="fas fa-plus"></i>
+</button>
 <AddUserDialog @ref="AddUserForm" CloseEventCallback="@AddUserDialog_OnDialogClose"></AddUserDialog>

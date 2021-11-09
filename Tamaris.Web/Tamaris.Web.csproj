@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\css\edit-form.css" />
     <None Include="wwwroot\css\authentication.css" />
   </ItemGroup>
   <ItemGroup>

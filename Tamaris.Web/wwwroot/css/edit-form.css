@@ -1,0 +1,66 @@
+﻿html,
+body,
+.main-account {
+    height: 100%;
+    background-color: #f5f5f5;
+}
+
+.main-form {
+    /*display: flex;*/
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #f5f5f5;
+}
+
+.edit-form {
+    width: 100%;
+/*    max-width: 400px;
+    padding: 15px;
+    margin: auto;
+*/}
+
+.edit-form .checkbox {
+    font-weight: 400;
+}
+
+.edit-form .form-floating:focus-within {
+    z-index: 2;
+}
+
+.edit-form11 input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.edit-form11 input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.textbox-alone {
+    top: 8px;
+    margin-bottom: 8px;
+}
+
+.textbox-top {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.textbox-middle {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.textbox-bottom {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
