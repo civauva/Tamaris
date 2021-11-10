@@ -44,7 +44,7 @@ namespace Tamaris.Web.Components.Users
 
         protected async Task HandleValidSubmit()
         {
-            User.RoleIds = RoleIds;
+            User.Roles = SelectedRoles;
 
             await AdminDataService.AddUser(User);
             ShowDialog = false;
@@ -55,16 +55,16 @@ namespace Tamaris.Web.Components.Users
 
         #region Roles
         public List<RoleForSelect> Roles { get; set; } = new List<RoleForSelect>();
-        public List<string> RoleIds { get; set; } = new List<string>();
+        public List<string> SelectedRoles { get; set; } = new List<string>();
 
         private void RolesChanged(ChangeEventArgs e, string key)
         {
-            var i = RoleIds.FirstOrDefault(i => i == key);
+            var i = SelectedRoles.FirstOrDefault(i => i == key);
 
             if (i != null)
-                RoleIds.Remove(i);
+                SelectedRoles.Remove(i);
             else
-                RoleIds.Add(key);
+                SelectedRoles.Add(key);
         }
         #endregion Roles
 

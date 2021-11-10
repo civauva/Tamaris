@@ -32,16 +32,7 @@ namespace Tamaris.API.Controllers.Admin
 			_roleManager = roleManager;
 		}
 
-        private async Task CheckIfDefaultRolesExist()
-        {
-            if(!_roleManager.Roles.Any())
-            {
-				await _roleManager.CreateAsync(new Role { Name = "Administrators", IsAdmin = true });
-				await _roleManager.CreateAsync(new Role { Name = "Standard users", IsAdmin = false });
-			}
-        }
-
-
+ 
         #region Getting data
         // GET
         /// <summary>
@@ -65,8 +56,6 @@ namespace Tamaris.API.Controllers.Admin
 		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		public async Task<ActionResult<IEnumerable<RoleForSelect>>> Get([FromQuery] QueryParameters parameters, string searchString, CancellationToken cancellationToken = default)
 		{
-			await CheckIfDefaultRolesExist();
-
 			LogMethodListGetterEntry(parameters, searchString);
 
 			try

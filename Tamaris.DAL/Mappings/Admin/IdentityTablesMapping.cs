@@ -28,8 +28,8 @@ namespace Tamaris.DAL.Mappings.Admin
             modelBuilder.Entity<Role>()
                 .HasData
                 (
-                    new Role { Id = Guid.NewGuid().ToString(), Name = "Administrators", IsAdmin = true },
-                    new Role { Id = Guid.NewGuid().ToString(), Name = "Standard users", IsAdmin = false }
+                    new Role { Id = Guid.NewGuid().ToString(), Name = "Administrators", NormalizedName = "ADMINISTRATORS", IsAdmin = true },
+                    new Role { Id = Guid.NewGuid().ToString(), Name = "Standard users", NormalizedName = "STANDARD USERS", IsAdmin = false }
                 );
         }
     }

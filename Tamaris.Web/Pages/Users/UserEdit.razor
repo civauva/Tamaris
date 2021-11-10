@@ -42,14 +42,31 @@
                 <ValidationMessage For="@(() => User.Company)" />
             </div>
 
-            <div class="card" style="width: 25rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Avatar</h5>
-                    <InputFile OnChange="OnInputFileChange" single />
-                </div>
+            <h6 for="inputRoles" class="mt-3">Roles:</h6>
 
-                <div class="px-3">
-                    <img src="@thumbnail" class="card-img-bottom mb-3" style="border:1px solid #CCCCAA" />
+            <div class="form-floating mb-3">
+                <div class="list-group">
+                    @foreach (var role in Roles)
+                    {
+                        <label class="list-group-item">
+                            <input class="form-check-input me-1" type="checkbox" value="@role.RoleName" checked="@role.IsChecked" @onchange="@((e) => RolesChanged(e, @role.RoleName))">
+                            @role.RoleName
+                        </label>
+                    }
+                </div>
+            </div>
+
+
+
+
+            <h6 class="card-title mt-3">Avatar</h6>
+
+
+            <div class="mt-3 mb-3">
+                <InputFile OnChange="OnInputFileChange" single />
+
+                <div class="mt-3 mb-3">
+                    <img src="@thumbnail" class="card-img-bottom avatar" style="border:1px solid #CCCCAA" />
                 </div>
             </div>
 

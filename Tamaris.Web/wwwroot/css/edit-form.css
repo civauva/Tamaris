@@ -64,3 +64,10 @@ body,
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
+.avatar {
+    max-height: 500px;
+    max-width: 500px;
+    height: auto;
+    width: auto;
+}

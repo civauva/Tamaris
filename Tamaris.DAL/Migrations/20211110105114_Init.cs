@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Tamaris.DAL.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -214,13 +214,13 @@ namespace Tamaris.DAL.Migrations
                 schema: "admin",
                 table: "roles",
                 columns: new[] { "Id", "ConcurrencyStamp", "is_admin", "Name", "NormalizedName" },
-                values: new object[] { "0d94f931-40b4-42ed-bdd2-6daa433323b2", "7eed2901-f064-4de5-acb9-88f6a03cf09d", true, "Administrators", null });
+                values: new object[] { "984a3371-5ab4-41e4-adab-8920181bd032", "2ae501bd-02d0-4a93-847e-d88b40e88ea5", true, "Administrators", "ADMINISTRATORS" });
 
             migrationBuilder.InsertData(
                 schema: "admin",
                 table: "roles",
                 columns: new[] { "Id", "ConcurrencyStamp", "is_admin", "Name", "NormalizedName" },
-                values: new object[] { "e1f09707-c528-4269-9968-8cbf25115f47", "5fe4d73c-309b-415d-b8e9-cc4fa728eeb9", false, "Standard users", null });
+                values: new object[] { "f9f0ae3e-8c50-44c2-8dc1-d23bd7a571d2", "e3dd8c99-eeb5-4b4c-b569-bd1f9ce24814", false, "Standard users", "STANDARD USERS" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_messages_receiver_user_id",

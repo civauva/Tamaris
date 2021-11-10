@@ -60,7 +60,7 @@
                                 @foreach (var role in Roles)
                                 {
                                     <label class="list-group-item">
-                                        <input class="form-check-input me-1" type="checkbox" value="@role.Id" @onchange="@((e) => RolesChanged(e, @role.Id))">
+                                        <input class="form-check-input me-1" type="checkbox" value="@role.RoleName" @onchange="@((e) => RolesChanged(e, @role.RoleName))">
                                         @role.RoleName
                                     </label>
                                 }
@@ -77,7 +77,7 @@
                             <InputFile OnChange="OnInputFileChange" single />
 
                             <div class="mt-3 mb-3">
-                                <img src="@thumbnail" class="card-img-bottom" style="border:1px solid #CCCCAA" />
+                                <img src="@thumbnail" class="card-img-bottom avatar" style="border:1px solid #CCCCAA" />
                             </div>
                         </div>
 

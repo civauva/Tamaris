@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Tamaris.Domains.Admin;
+using Tamaris.Web.Models;
 using Tamaris.Web.Services;
 
 namespace Tamaris.Web.Pages.Users
@@ -32,12 +33,20 @@ namespace Tamaris.Web.Pages.Users
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
-            await UserNameInput.FocusAsync();
-
+            try
+            {
+                await UserNameInput.FocusAsync();
+            }
+            catch (Exception ex)
+            {
+            }
         }
 
         protected override async Task OnInitializedAsync()
         {
+            var allRoles = (await AdminDataService.GetAllRoles()).ToList();
+            Roles = Mapper.Map<List<RoleForCheck>>(allRoles);
+
             Saved = false;
 
             if (string.IsNullOrEmpty(Username)) //new employee is being created
@@ -49,9 +58,43 @@ namespace Tamaris.Web.Pages.Users
             {
                 var user = await AdminDataService.GetUserByUsername(Username);
                 User = Mapper.Map<UserForUpdate>(user);
+
+                SetCheckedRoles();
                 SetThumbnail();
             }
         }
+
+
+        #region Roles
+        public List<RoleForCheck> Roles { get; set; } = new List<RoleForCheck>();
+        public List<string> SelectedRoles { get; set; } = new List<string>();
+
+        private void RolesChanged(ChangeEventArgs e, string key)
+        {
+            var i = SelectedRoles.FirstOrDefault(i => i == key);
+
+            if (i != null)
+                SelectedRoles.Remove(i);
+            else
+                SelectedRoles.Add(key);
+        }
+
+        private void SetCheckedRoles()
+        {
+            if (User.Roles.Any())
+            {
+                foreach (var role in User.Roles)
+                {
+                    var checkedRole = Roles.FirstOrDefault(r => r.RoleName == role);
+                    if (checkedRole != null)
+                    {
+                        checkedRole.IsChecked = true;
+                        SelectedRoles.Add(role);
+                    }
+                }
+            }
+        }
+        #endregion Roles
 
 
         #region Thumbnail
@@ -98,6 +141,8 @@ namespace Tamaris.Web.Pages.Users
         protected async Task HandleValidSubmit()
         {
             Saved = false;
+
+            User.Roles = SelectedRoles;
 
             if (string.IsNullOrEmpty(User.Id)) // new
             {

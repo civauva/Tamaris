@@ -12,8 +12,8 @@ using Tamaris.DAL.DbContexts;
 namespace Tamaris.DAL.Migrations
 {
     [DbContext(typeof(TamarisDbContext))]
-    [Migration("20211108051025_Initial")]
-    partial class Initial
+    [Migration("20211110105114_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -163,17 +163,19 @@ namespace Tamaris.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0d94f931-40b4-42ed-bdd2-6daa433323b2",
-                            ConcurrencyStamp = "7eed2901-f064-4de5-acb9-88f6a03cf09d",
+                            Id = "984a3371-5ab4-41e4-adab-8920181bd032",
+                            ConcurrencyStamp = "2ae501bd-02d0-4a93-847e-d88b40e88ea5",
                             IsAdmin = true,
-                            Name = "Administrators"
+                            Name = "Administrators",
+                            NormalizedName = "ADMINISTRATORS"
                         },
                         new
                         {
-                            Id = "e1f09707-c528-4269-9968-8cbf25115f47",
-                            ConcurrencyStamp = "5fe4d73c-309b-415d-b8e9-cc4fa728eeb9",
+                            Id = "f9f0ae3e-8c50-44c2-8dc1-d23bd7a571d2",
+                            ConcurrencyStamp = "e3dd8c99-eeb5-4b4c-b569-bd1f9ce24814",
                             IsAdmin = false,
-                            Name = "Standard users"
+                            Name = "Standard users",
+                            NormalizedName = "STANDARD USERS"
                         });
                 });
 
