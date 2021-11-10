@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Components;
+
 using Tamaris.Domains.Admin;
 using Tamaris.Web.Components.Users;
 using Tamaris.Web.Services;
+
 
 namespace Tamaris.Web.Pages.Users
 {
     public partial class UsersOverview
     {
+        string ADMINISTRATION_ROLE = "Administrators";
+
         public IEnumerable<UserForSelect> Users { get; set; }
 
         [Inject]
