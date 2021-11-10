@@ -77,9 +77,9 @@
             <div class="d-flex justify-content-end mt-3">
                 <button type="submit" class="btn btn-primary edit-btn me-1">Save user</button>
 
-                @if (string.IsNullOrEmpty(User.Id))
+                @if (!string.IsNullOrEmpty(User.Id))
                 {
-                    <a class="btn btn-danger" @onclick="@DeleteUser">
+                    <a class="btn btn-danger me-1" @onclick="@DeleteUser">
                         Delete
                     </a>
                 }

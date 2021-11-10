@@ -23,5 +23,23 @@ namespace Tamaris.Web.Services
             var messageForm = modal.Show<DisplayMessage>(caption, parameters, options);
             var result = await messageForm.Result;
         }
+
+        public async Task<bool> IsQuestionAccepted(IModalService modal, string message, string caption = "Tamaris")
+        {
+            var parameters = new ModalParameters();
+            parameters.Add(nameof(AskQuestion.Message), message);
+
+            var options = new ModalOptions()
+            {
+                HideCloseButton = true
+            };
+
+            var messageForm = modal.Show<AskQuestion>(caption, parameters, options);
+            var result = await messageForm.Result;
+
+            var accepted = result.Data != null && Convert.ToBoolean(result.Data).Equals(true);
+            return accepted;
+        }
+
     }
 }

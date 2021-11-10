@@ -420,42 +420,50 @@ namespace Tamaris.API.Controllers.Admin
 		/// Deletes user
 		/// </summary>
 		/// <remarks>This method deletes user with specified id.</remarks>
-		/// <param name="id">The key of the user we want to fetch</param>
+		/// <param name="username">The key of the user we want to fetch</param>
 		/// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
 		/// <response code="200">If deletion of the user was successful.</response>
 		/// <response code="400">If deletion of the user was not successful.</response>   
 		/// <response code="404">If the user was not found.</response>   
-		[HttpDelete("{id}")]
+		[HttpDelete("{username}")]
 		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserForSelect))]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<ActionResult<UserForSelect>> DeleteUser(string id, CancellationToken cancellationToken = default)
+		public async Task<ActionResult<UserForSelect>> DeleteUser(string username, CancellationToken cancellationToken = default)
 		{
-			LogMethodDeleteEntry(id);
+			LogMethodDeleteEntry(username);
 
 			try
 			{
-				var userFromRepo = await _unitOfWork.UsersRepository.GetAsync(id, cancellationToken);
+				var userFromRepo = await _unitOfWork.UsersRepository.GetByUsernameAsync(username, cancellationToken);
 				if (userFromRepo == null)
 				{
-					LogMethodDeleteNoEntity(id);
+					LogMethodDeleteNoEntity(username);
 					return NotFound();
 				}
 
 				// Lets get this guy before we remove it from the database
 				// so that we can return proper object back to the caller of the method.
-				var userForSelect = await _unitOfWork.UsersRepository.GetForSelectWithIdAsync(id, cancellationToken);
+				var userForSelect = await _unitOfWork.UsersRepository.GetForSelectWithUsernameAsync(username, cancellationToken);
 
+				// We are not using Repository for this like here:
+				// _unitOfWork.UsersRepository.Remove(userFromRepo);
+				// but instead UserManager like here:
+				var resultDeletion = await _userManager.DeleteAsync(userFromRepo);
 
-				_unitOfWork.UsersRepository.Remove(userFromRepo);
+				if (!resultDeletion.Succeeded)
+				{
+					var errors = resultDeletion.Errors.Select(e => e.Description);
+					return BadRequest(errors);
+				}
 
 				if (!await _unitOfWork.SaveAsync(cancellationToken))
 				{
-					LogMethodDeleteFailed(id);
-					return BadRequest($"Deleting user with id = {id} failed on save.");
+					LogMethodDeleteFailed(username);
+					return BadRequest($"Deleting user with id = {username} failed on save.");
 				}
 
-				LogMethodDeleteSuccessful(id);
+				LogMethodDeleteSuccessful(username);
 				return Ok(userForSelect);
 			}
 			catch(TaskCanceledException)

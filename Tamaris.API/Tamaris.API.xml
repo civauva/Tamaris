@@ -184,7 +184,7 @@
             Deletes user
             </summary>
             <remarks>This method deletes user with specified id.</remarks>
-            <param name="id">The key of the user we want to fetch</param>
+            <param name="username">The key of the user we want to fetch</param>
             <param name="cancellationToken">Token used to explicitly cancel the request.</param>
             <response code="200">If deletion of the user was successful.</response>
             <response code="400">If deletion of the user was not successful.</response>   
