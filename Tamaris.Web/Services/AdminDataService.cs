@@ -67,6 +67,12 @@ namespace Tamaris.Web.Services
             var result = JsonSerializer.Deserialize<UserForSelect>(deletionContent, _options);
             return result;
         }
+
+        public async Task<IEnumerable<RoleForSelect>> GetAllRoles()
+        {
+            return await JsonSerializer.DeserializeAsync<IEnumerable<RoleForSelect>>
+                (await _httpClient.GetStreamAsync($"Admin/Roles"), _options);
+        }
     }
 }
 

@@ -17,6 +17,13 @@ namespace Tamaris.Web.Components.Users
         [Parameter]
         public EventCallback<bool> CloseEventCallback { get; set; }
 
+        protected async override Task OnInitializedAsync()
+        {
+            Roles = (await AdminDataService.GetAllRoles()).ToList();
+        }
+
+
+
         public void Show()
         {
             ResetDialog();
@@ -30,19 +37,36 @@ namespace Tamaris.Web.Components.Users
             StateHasChanged();
         }
 
-        private void ResetDialog()
+        private async void ResetDialog()
         {
             User = new UserForInsert();
         }
 
         protected async Task HandleValidSubmit()
         {
+            User.RoleIds = RoleIds;
+
             await AdminDataService.AddUser(User);
             ShowDialog = false;
 
             await CloseEventCallback.InvokeAsync(true);
             StateHasChanged();
         }
+
+        #region Roles
+        public List<RoleForSelect> Roles { get; set; } = new List<RoleForSelect>();
+        public List<string> RoleIds { get; set; } = new List<string>();
+
+        private void RolesChanged(ChangeEventArgs e, string key)
+        {
+            var i = RoleIds.FirstOrDefault(i => i == key);
+
+            if (i != null)
+                RoleIds.Remove(i);
+            else
+                RoleIds.Add(key);
+        }
+        #endregion Roles
 
         #region Thumbnail
 

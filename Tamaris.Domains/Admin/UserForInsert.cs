@@ -9,5 +9,7 @@
 		public string Password { get; set; } // password
 		public string Company { get; set; } // company
 		public byte[] Avatar { get; set; } // avatar
+
+		public List<string> RoleIds { get; set; }
 	}
 }

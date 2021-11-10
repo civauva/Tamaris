@@ -205,14 +205,25 @@ namespace Tamaris.API.Controllers.Admin
 				// If there is a need to manipulate the object, this is the place to do it
 				ManipulateOnCreate(userEntity);
 
-				// Instead of storing the user using UnitOfWork we are using UserManager first
-				// to enforce hashing and the rest of identity stuff
-				var result = await _userManager.CreateAsync(userEntity, user.Password);
-				if (!result.Succeeded)
+
+                #region User manager part
+                // Instead of storing the user using UnitOfWork we are using UserManager first
+                // to enforce hashing and the rest of identity stuff
+                var resultCreateUser = await _userManager.CreateAsync(userEntity, user.Password);
+				if (!resultCreateUser.Succeeded)
 				{
-					var errors = result.Errors.Select(e => e.Description);
+					var errors = resultCreateUser.Errors.Select(e => e.Description);
 					return BadRequest(errors);
 				}
+
+				var resultAssignRole = await _userManager.AddToRolesAsync(userEntity, user.RoleIds);
+				if (!resultAssignRole.Succeeded)
+				{
+					var errors = resultAssignRole.Errors.Select(e => e.Description);
+					return BadRequest(errors);
+				}
+				#endregion User manager part
+
 
 				var userFromRepo = await _unitOfWork.UsersRepository.GetByUsernameAsync(user.Username);
 				_mapper.Map(userEntity, userFromRepo);
@@ -239,7 +250,11 @@ namespace Tamaris.API.Controllers.Admin
 			{
 				LogVerbose("User cancelled action.");
 				return NoContent();
-			}					
+			}	
+			catch(Exception ex)
+            {
+				return BadRequest(ex.Message);
+            }
 		}
 
 		#endregion Adding/creating
