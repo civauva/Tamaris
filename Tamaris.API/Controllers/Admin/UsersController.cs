@@ -112,6 +112,12 @@ namespace Tamaris.API.Controllers.Admin
 					return NoContent(); // No user found with given key
 				}
 
+				var userFromRepo = await _unitOfWork.UsersRepository.GetAsync(user.Id);
+
+				// In order to get the roles we need to fetch the "real" user from the repository
+				var roles = await _userManager.GetRolesAsync(userFromRepo);
+				user.Roles = roles != null ? roles.ToList() : new List<string>();
+
 				LogMethodSingleGetterData(id);
 				return Ok(user);
 			}
@@ -147,6 +153,12 @@ namespace Tamaris.API.Controllers.Admin
 					LogMethodSingleGetterNoData(userName);
 					return NoContent(); // No user found with given key
 				}
+
+				var userFromRepo = await _unitOfWork.UsersRepository.GetAsync(user.Id);
+
+				// In order to get the roles we need to fetch the "real" user from the repository
+				var roles = await _userManager.GetRolesAsync(userFromRepo);
+				user.Roles = roles != null ? roles.ToList() : new List<string>();
 
 				LogMethodSingleGetterData(userName);
 				return Ok(user);
@@ -205,14 +217,25 @@ namespace Tamaris.API.Controllers.Admin
 				// If there is a need to manipulate the object, this is the place to do it
 				ManipulateOnCreate(userEntity);
 
-				// Instead of storing the user using UnitOfWork we are using UserManager first
-				// to enforce hashing and the rest of identity stuff
-				var result = await _userManager.CreateAsync(userEntity, user.Password);
-				if (!result.Succeeded)
+
+                #region User manager part
+                // Instead of storing the user using UnitOfWork we are using UserManager first
+                // to enforce hashing and the rest of identity stuff
+                var resultCreateUser = await _userManager.CreateAsync(userEntity, user.Password);
+				if (!resultCreateUser.Succeeded)
 				{
-					var errors = result.Errors.Select(e => e.Description);
+					var errors = resultCreateUser.Errors.Select(e => e.Description);
 					return BadRequest(errors);
 				}
+
+				var resultAssignRole = await _userManager.AddToRolesAsync(userEntity, user.Roles);
+				if (!resultAssignRole.Succeeded)
+				{
+					var errors = resultAssignRole.Errors.Select(e => e.Description);
+					return BadRequest(errors);
+				}
+				#endregion User manager part
+
 
 				var userFromRepo = await _unitOfWork.UsersRepository.GetByUsernameAsync(user.Username);
 				_mapper.Map(userEntity, userFromRepo);
@@ -239,7 +262,11 @@ namespace Tamaris.API.Controllers.Admin
 			{
 				LogVerbose("User cancelled action.");
 				return NoContent();
-			}					
+			}	
+			catch(Exception ex)
+            {
+				return BadRequest(ex.Message);
+            }
 		}
 
 		#endregion Adding/creating
@@ -275,11 +302,11 @@ namespace Tamaris.API.Controllers.Admin
 
 
 			// Checks the validation in the data annotation of the data model
-			if (!ModelState.IsValid)
-			{
-				LogMethodUpdateInvalid(id, user);
-				return new UnprocessableEntityObjectResult(ModelState);
-			}
+			//if (!ModelState.IsValid)
+			//{
+			//	LogMethodUpdateInvalid(id, user);
+			//	return new UnprocessableEntityObjectResult(ModelState);
+			//}
 
 			try
 			{
@@ -293,7 +320,28 @@ namespace Tamaris.API.Controllers.Admin
 					// If there is a need to manipulate the object, this is the place to do it
 					ManipulateOnCreate(userToCreate);
 
-					_unitOfWork.UsersRepository.Add(userToCreate);
+
+					#region User manager part
+					// Instead of storing the user using UnitOfWork we are using UserManager first
+					// to enforce hashing and the rest of identity stuff
+					var resultCreateUser = await _userManager.CreateAsync(userToCreate);
+					if (!resultCreateUser.Succeeded)
+					{
+						var errors = resultCreateUser.Errors.Select(e => e.Description);
+						return BadRequest(errors);
+					}
+
+					var resultAssignRole = await _userManager.AddToRolesAsync(userToCreate, user.Roles);
+					if (!resultAssignRole.Succeeded)
+					{
+						var errors = resultAssignRole.Errors.Select(e => e.Description);
+						return BadRequest(errors);
+					}
+					#endregion User manager part
+
+
+					userFromRepo = await _unitOfWork.UsersRepository.GetByUsernameAsync(user.Username);
+					_mapper.Map(userToCreate, userFromRepo);
 
 					if (!await _unitOfWork.SaveAsync(cancellationToken))
 					{
@@ -319,6 +367,24 @@ namespace Tamaris.API.Controllers.Admin
 					// If there is a need to manipulate the object, this is the place to do it
 					ManipulateOnUpdate(userFromRepo);
 
+					#region User manager part
+					var existingRoles = await _userManager.GetRolesAsync(userFromRepo);
+					var removedRoles = existingRoles.Where(er => !user.Roles.Any(ur => ur == er));
+					var newRoles = user.Roles.Where(ur => !existingRoles.Any(er => er == ur));
+
+					// First revoke the removed roles
+					await _userManager.RemoveFromRolesAsync(userFromRepo, removedRoles);
+
+					// Then assign the selected roles
+					var resultAssignRole = await _userManager.AddToRolesAsync(userFromRepo, newRoles);
+					if (!resultAssignRole.Succeeded)
+					{
+						var errors = resultAssignRole.Errors.Select(e => e.Description);
+						return BadRequest(errors);
+					}
+					#endregion User manager part
+
+
 					// There is no such method like Update in the repository - we are working directly on the database
 					// _unitOfWork.UsersRepository.Update(userFromRepo);
 
@@ -337,6 +403,10 @@ namespace Tamaris.API.Controllers.Admin
 			{
 				LogVerbose("User cancelled action.");
 				return NoContent();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
 			}
 		}
 

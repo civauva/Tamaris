@@ -12,7 +12,7 @@ using Tamaris.Domains.DataShaping;
 using Tamaris.Entities.Admin;
 using Tamaris.DAL.Interfaces;
 using Tamaris.API.Infrastructure.Attributes;
-
+using Microsoft.AspNetCore.Identity;
 
 namespace Tamaris.API.Controllers.Admin
 {
@@ -22,35 +22,35 @@ namespace Tamaris.API.Controllers.Admin
 	{
 		private readonly ITamarisUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
+        private readonly RoleManager<Role> _roleManager;
+        private readonly string _defaultGetSingleRoute = "GetAdminsRole";
 
-		private readonly string _defaultGetSingleRoute = "GetAdminsRole";
-
-		public RolesController(ITamarisUnitOfWork unitOfWork, IMapper mapper)
+		public RolesController(ITamarisUnitOfWork unitOfWork, IMapper mapper, RoleManager<Role> roleManager)
 		{
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
-
+			_roleManager = roleManager;
 		}
 
+ 
+        #region Getting data
+        // GET
+        /// <summary>
+        /// Gets paging list with all roles
+        /// </summary>
+        /// <remarks>With pagination, you can optimize fetching the roles. For example, you can fetch 100 pages with 10 pages per page or 10 pages with 100 roles per page.
+        /// Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
+        /// with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
+        /// </remarks>
+        /// <param name="parameters">Query parameters</param>
+        /// <param name="searchString">Search anything in the given roles list. Search is performed against all searchable fields.</param>
+        /// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
 
-		#region Getting data
-		// GET
-		/// <summary>
-		/// Gets paging list with all roles
-		/// </summary>
-		/// <remarks>With pagination, you can optimize fetching the roles. For example, you can fetch 100 pages with 10 pages per page or 10 pages with 100 roles per page.
-		/// Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
-		/// with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
-		/// </remarks>
-		/// <param name="parameters">Query parameters</param>
-		/// <param name="searchString">Search anything in the given roles list. Search is performed against all searchable fields.</param>
-		/// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
-
-		/// <returns></returns>
-		/// <response code="200">Returns list of selected roles</response>
-		/// <response code="204">If there are no roles for given PageIndex/PageSize/SearchString combination</response>
-		/// <response code="401">If the user is not authorized to access this resource</response>
-		[HttpGet]
+        /// <returns></returns>
+        /// <response code="200">Returns list of selected roles</response>
+        /// <response code="204">If there are no roles for given PageIndex/PageSize/SearchString combination</response>
+        /// <response code="401">If the user is not authorized to access this resource</response>
+        [HttpGet]
 		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoleForSelect))]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status401Unauthorized)]

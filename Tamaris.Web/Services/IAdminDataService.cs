@@ -4,11 +4,17 @@ namespace Tamaris.Web.Services
 {
     public interface IAdminDataService
     {
+        #region Users
         Task<IEnumerable<UserForSelect>> GetAllUsers();
         Task<UserForSelect> GetUserById(int userId);
         Task<UserForSelect> GetUserByUsername(string userName);
         Task<UserForSelect> AddUser(UserForInsert user);
         Task ModifyUser(UserForUpdate user);
         Task<UserForSelect> DeleteUser(string username);
+        #endregion Users
+
+        #region Roles
+        Task<IEnumerable<RoleForSelect>> GetAllRoles();
+        #endregion Roles
     }
 }

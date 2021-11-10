@@ -112,6 +112,10 @@ namespace Tamaris.API.Controllers
                     return BadRequest(new RegisterResponse { Errors = errors });
                 }
 
+                // TODO: This is just temporarily in order for system to work
+                //       Of course in "real" system this should be removed.
+                await _userManager.AddToRoleAsync(user, "Administrators");
+
                 return await Login(new LoginRequest
                 {
                     UserName = requestModel.UserName,
