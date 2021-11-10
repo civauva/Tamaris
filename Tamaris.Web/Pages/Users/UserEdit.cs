@@ -63,7 +63,7 @@ namespace Tamaris.Web.Pages.Users
             }
             else
             {
-                var user = await AdminDataService.GetUserByUsername(Username);
+                var user = await AdminDataService.GetUserByUsernameAsync(Username);
                 User = Mapper.Map<UserForUpdate>(user);
 
                 SetCheckedRoles();

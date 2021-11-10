@@ -154,6 +154,16 @@
             <response code="200">Returns found user</response>
             <response code="204">If there is no user found for given key</response>   
         </member>
+        <member name="M:Tamaris.API.Controllers.Admin.UsersController.GetUserByEmail(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Gets single user by Email
+            </summary>
+            <remarks>This method returns user with given key</remarks>
+            <param name="email">Email of the user we want to fetch</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <response code="200">Returns found user</response>
+            <response code="204">If there is no user found for given key</response>   
+        </member>
         <member name="M:Tamaris.API.Controllers.Admin.UsersController.CreateUser(Tamaris.Domains.Admin.UserForInsert,System.Threading.CancellationToken)">
             <summary>
             Creates user

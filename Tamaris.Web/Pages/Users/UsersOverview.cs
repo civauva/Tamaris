@@ -16,7 +16,7 @@ namespace Tamaris.Web.Pages.Users
         [Inject]
         public IAdminDataService AdminDataService { get; set; }
 
-        protected AddUserDialog AddUserForm { get; set; }
+        protected AddUserDialog FormAddUser { get; set; }
 
         protected async override Task OnInitializedAsync()
         {
@@ -25,7 +25,7 @@ namespace Tamaris.Web.Pages.Users
 
         protected void QuickAddUser()
         {
-            AddUserForm.Show();
+            FormAddUser.Show();
         }
 
         public async void AddUserDialog_OnDialogClose()

@@ -104,7 +104,7 @@ namespace Tamaris.API.Controllers.Admin
 			LogMethodSingleGetterEntry(id);
 			try
 			{
-				var user = await _unitOfWork.UsersRepository.GetForSelectWithIdAsync(id, cancellationToken);
+				var user = await _unitOfWork.UsersRepository.GetForSelectByIdAsync(id, cancellationToken);
 
 				if (user == null)
 				{
@@ -146,7 +146,7 @@ namespace Tamaris.API.Controllers.Admin
 			LogMethodSingleGetterEntry(userName);
 			try
 			{
-				var user = await _unitOfWork.UsersRepository.GetForSelectWithUsernameAsync(userName, cancellationToken);
+				var user = await _unitOfWork.UsersRepository.GetForSelectByUsernameAsync(userName, cancellationToken);
 
 				if (user == null)
 				{
@@ -161,6 +161,49 @@ namespace Tamaris.API.Controllers.Admin
 				user.Roles = roles != null ? roles.ToList() : new List<string>();
 
 				LogMethodSingleGetterData(userName);
+				return Ok(user);
+			}
+			catch (TaskCanceledException)
+			{
+				LogVerbose("User cancelled action.");
+				return NoContent();
+			}
+		}
+
+
+
+		// GET api/UserForSelect/5
+		/// <summary>
+		/// Gets single user by Email
+		/// </summary>
+		/// <remarks>This method returns user with given key</remarks>
+		/// <param name="email">Email of the user we want to fetch</param>
+		/// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+		/// <response code="200">Returns found user</response>
+		/// <response code="204">If there is no user found for given key</response>   
+		[HttpGet("ByEmail/{Email}", Name = "GetAdminsUserByEmail")]
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserForSelect))]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		public async Task<ActionResult<UserForSelect>> GetUserByEmail(string email, CancellationToken cancellationToken = default)
+		{
+			LogMethodSingleGetterEntry(email);
+			try
+			{
+				var user = await _unitOfWork.UsersRepository.GetForSelectByEmailAsync(email, cancellationToken);
+
+				if (user == null)
+				{
+					LogMethodSingleGetterNoData(email);
+					return NoContent(); // No user found with given key
+				}
+
+				var userFromRepo = await _unitOfWork.UsersRepository.GetAsync(user.Id);
+
+				// In order to get the roles we need to fetch the "real" user from the repository
+				var roles = await _userManager.GetRolesAsync(userFromRepo);
+				user.Roles = roles != null ? roles.ToList() : new List<string>();
+
+				LogMethodSingleGetterData(email);
 				return Ok(user);
 			}
 			catch (TaskCanceledException)
@@ -252,7 +295,7 @@ namespace Tamaris.API.Controllers.Admin
 
 
 				// Finally, get the object from the database, because this is what we want to return
-				var userToReturn  = await _unitOfWork.UsersRepository.GetForSelectWithIdAsync(userEntity.Id, cancellationToken);
+				var userToReturn  = await _unitOfWork.UsersRepository.GetForSelectByIdAsync(userEntity.Id, cancellationToken);
 
 				return CreatedAtRoute(_defaultGetSingleRoute, // nameof(GetUser),
 					new { userEntity.Id },
@@ -350,7 +393,7 @@ namespace Tamaris.API.Controllers.Admin
 					}
 
 					// Finally, get the object from the database, because this is what we want to return
-					var userToReturn  = await _unitOfWork.UsersRepository.GetForSelectWithIdAsync(userToCreate.Id, cancellationToken);
+					var userToReturn  = await _unitOfWork.UsersRepository.GetForSelectByIdAsync(userToCreate.Id, cancellationToken);
 
 					LogMethodUpdateUpsertSuccessful(userToCreate.Id);
 
@@ -444,7 +487,7 @@ namespace Tamaris.API.Controllers.Admin
 
 				// Lets get this guy before we remove it from the database
 				// so that we can return proper object back to the caller of the method.
-				var userForSelect = await _unitOfWork.UsersRepository.GetForSelectWithUsernameAsync(username, cancellationToken);
+				var userForSelect = await _unitOfWork.UsersRepository.GetForSelectByUsernameAsync(username, cancellationToken);
 
 				// We are not using Repository for this like here:
 				// _unitOfWork.UsersRepository.Remove(userFromRepo);

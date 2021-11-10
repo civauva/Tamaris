@@ -99,15 +99,21 @@ namespace Tamaris.DAL.Repositories.Admin
 			return await TamarisDbContext.Users.FirstOrDefaultAsync(q => q.UserName == username, cancellationToken);
 		}
 
-		public async Task<UserForSelect> GetForSelectWithIdAsync(string id, CancellationToken cancellationToken = default)
+		public async Task<UserForSelect> GetForSelectByIdAsync(string id, CancellationToken cancellationToken = default)
 		{
 			return await UserForSelects.FirstOrDefaultAsync(q => q.Id == id, cancellationToken);
 		}
 
-		public async Task<UserForSelect> GetForSelectWithUsernameAsync(string userName, CancellationToken cancellationToken = default)
+		public async Task<UserForSelect> GetForSelectByUsernameAsync(string userName, CancellationToken cancellationToken = default)
 		{
 			return await UserForSelects.FirstOrDefaultAsync(q => q.Username == userName, cancellationToken);
 		}
+
+		public async Task<UserForSelect> GetForSelectByEmailAsync(string email, CancellationToken cancellationToken = default)
+		{
+			return await UserForSelects.FirstOrDefaultAsync(q => q.Email == email, cancellationToken);
+		}
+
 
 		#region Special methods (usually for nested Get API calls)
 

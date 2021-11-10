@@ -1,0 +1,31 @@
+﻿@if (ShowDialog)
+{
+    <div class="modal fade show d-block rodjo" id="exampleModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="profile-nav">
+                    <div class="panel">
+                        <div class="user-heading">
+                            <a href="#">
+                                <img src="@thumbnail" alt="">
+                            </a>
+                            <h1>@User.FirstName @User.LastName</h1>
+                            <p>@User.Email</p>
+                        </div>
+
+                        <ul class="nav flex-column">
+                            <a class="nav-link" href="#"> <i class="fa fa-user"></i> Profile</a>
+                            <a class="nav-link" href="#"> <i class="fa fa-calendar"></i> Messages <span class="label label-warning pull-right r-activity">9</span></a>
+                            <a class="nav-link" href="#"> <i class="fa fa-edit"></i> Edit profile</a>
+                        </ul>
+
+                        <div class="d-flex justify-content-begin p-3">
+                            <a class="btn btn-outline-primary" @onclick="@Close">Close</a>
+                            @*<a class="btn btn-outline-danger" @onclick="@Logout">Sign out</a>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -27,10 +27,16 @@ namespace Tamaris.Web.Services
                 (await _httpClient.GetStreamAsync($"Admin/Users/{userId}"), _options);
         }
 
-        public async Task<UserForSelect> GetUserByUsername(string userName)
+        public async Task<UserForSelect> GetUserByUsernameAsync(string userName)
         {
             return await JsonSerializer.DeserializeAsync<UserForSelect>
                 (await _httpClient.GetStreamAsync($"Admin/Users/ByUsername/{userName}"), _options);
+        }
+
+        public async Task<UserForSelect> GetUserByEmailAsync(string userName)
+        {
+            return await JsonSerializer.DeserializeAsync<UserForSelect>
+                (await _httpClient.GetStreamAsync($"Admin/Users/ByEmail/{userName}"), _options);
         }
 
         public async Task<UserForSelect> AddUser(UserForInsert user)

@@ -10,13 +10,14 @@ namespace Tamaris.DAL.Interfaces.Admin
 		Task<User> GetByUsernameAsync(string username, CancellationToken cancellationToken = default);
 		Task<IEnumerable<UserForSelect>> GetAllForSelectAsync(CancellationToken cancellationToken = default);
 		Task<PaginatedList<UserForSelect>> GetPaginatedForSelectAsync(QueryParameters parameters, string searchString, CancellationToken cancellationToken = default);
-		Task<UserForSelect> GetForSelectWithIdAsync(string username, CancellationToken cancellationToken = default);
-		Task<UserForSelect> GetForSelectWithUsernameAsync(string username, CancellationToken cancellationToken = default);
+		Task<UserForSelect> GetForSelectByIdAsync(string username, CancellationToken cancellationToken = default);
+		Task<UserForSelect> GetForSelectByUsernameAsync(string username, CancellationToken cancellationToken = default);
+		Task<UserForSelect> GetForSelectByEmailAsync(string email, CancellationToken cancellationToken = default);
 
 		#region Special methods (usually for nested Get API calls)
 
 		Task<PaginatedList<UserForSelect>> GetPaginatedForSelect_ForRolesAsync(int Id, QueryParameters parameters, string searchString, CancellationToken cancellationToken = default);
 
-		#endregion Special methods (usually for nested Get API calls)
-	}
+        #endregion Special methods (usually for nested Get API calls)
+    }
 }
