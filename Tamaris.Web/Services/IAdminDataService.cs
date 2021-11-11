@@ -6,6 +6,7 @@ namespace Tamaris.Web.Services
     {
         #region Users
         Task<IEnumerable<UserForSelect>> GetAllUsers();
+        Task<IEnumerable<UserForChat>> GetAllUsersForMessaging();
         Task<UserForSelect> GetUserById(int userId);
         Task<UserForSelect> GetUserByUsernameAsync(string userName);
         Task<UserForSelect> GetUserByEmailAsync(string userName);

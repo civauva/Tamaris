@@ -14,22 +14,30 @@
                         <ValidationSummary />
 
                         <div class="form-floating">
+                            <input type="email" class="form-control textbox-alone" id="inputEmail" placeholder="E-mail" @bind="User.Email" readonly="readonly" />
+                            <label for="inputEmail">E-mail:</label>
+                            <ValidationMessage For="@(() => User.Email)" />
+                        </div>
+
+                        <div class="form-floating">
                             <input type="text" class="form-control textbox-alone" id="inputLastName" placeholder="LastName" @bind="User.LastName" />
-                            <label for="inputLastName">LastName:</label>
+                            <label for="inputLastName">Last name:</label>
                             <ValidationMessage For="@(() => User.LastName)" />
                         </div>
 
                         <div class="form-floating">
                             <input type="text" class="form-control textbox-alone" id="inputFirstName" placeholder="FirstName" @bind="User.FirstName" />
-                            <label for="inputFirstName">FirstName:</label>
+                            <label for="inputFirstName">First name:</label>
                             <ValidationMessage For="@(() => User.FirstName)" />
                         </div>
 
                         <div class="form-floating">
-                            <input type="email" class="form-control textbox-alone" id="inputEmail" placeholder="E-mail" @bind="User.Email" />
-                            <label for="inputEmail">E-mail:</label>
-                            <ValidationMessage For="@(() => User.Email)" />
+                            <input type="text" class="form-control textbox-alone" id="inputCompany" placeholder="Company" @bind="User.Company" />
+                            <label for="inputCompany">Company:</label>
+                            <ValidationMessage For="@(() => User.Company)" />
                         </div>
+
+                        <h6 class="card-title mt-3">Password</h6>
 
                         <div class="form-floating">
                             <input type="password" class="form-control textbox-alone" id="inputPassword" placeholder="Password" @bind="User.CurrentPassword" />
@@ -41,12 +49,6 @@
                             <input type="password" class="form-control textbox-alone" id="inputPassword" placeholder="Password" @bind="User.NewPassword" />
                             <label for="inputNewPassword">New password:</label>
                             <ValidationMessage For="@(() => User.NewPassword)" />
-                        </div>
-
-                        <div class="form-floating">
-                            <input type="text" class="form-control textbox-alone" id="inputCompany" placeholder="Company" @bind="User.Company" />
-                            <label for="inputCompany">Company:</label>
-                            <ValidationMessage For="@(() => User.Company)" />
                         </div>
 
 

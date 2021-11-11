@@ -11,10 +11,10 @@ namespace Tamaris.Web.Pages.Users
     {
         string ADMINISTRATION_ROLE = "Administrators";
 
-        public IEnumerable<UserForSelect> Users { get; set; }
-
         [Inject]
         public IAdminDataService AdminDataService { get; set; }
+
+        public IEnumerable<UserForSelect> Users { get; set; }
 
         protected AddUserDialog FormAddUser { get; set; }
 

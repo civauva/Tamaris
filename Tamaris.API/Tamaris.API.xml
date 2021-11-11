@@ -134,6 +134,16 @@
             <response code="204">If there are no users for given PageIndex/PageSize/SearchString combination</response>
             <response code="401">If the user is not authorized to access this resource</response>
         </member>
+        <member name="M:Tamaris.API.Controllers.Admin.UsersController.GetAllForMessaging(System.Threading.CancellationToken)">
+            <summary>
+            Gets list with all users for messaging
+            </summary>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <returns>List with all available users for messaging</returns>
+            <response code="200">Returns list of selected users</response>
+            <response code="204">If there are no users for given PageIndex/PageSize/SearchString combination</response>
+            <response code="401">If the user is not authorized to access this resource</response>
+        </member>
         <member name="M:Tamaris.API.Controllers.Admin.UsersController.GetUser(System.String,System.Threading.CancellationToken)">
             <summary>
             Gets single user
@@ -299,6 +309,34 @@
             </remarks>
             <param name="parameters">Query parameters</param>
             <param name="searchString">Search anything in the given messages list. Search is performed against all searchable fields.</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <returns></returns>
+            <response code="200">Returns list of selected messages</response>
+            <response code="204">If there are no messages for given PageIndex/PageSize/SearchString combination</response>
+            <response code="401">If the user is not authorized to access this resource</response>
+        </member>
+        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.GetForChat(System.Threading.CancellationToken)">
+            <summary>
+            Gets paging list with all messages
+            </summary>
+            <remarks>With pagination, you can optimize fetching the messages. For example, you can fetch 100 pages with 10 pages per page or 10 pages with 100 messages per page.
+            Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
+            with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
+            </remarks>
+            <param name="parameters">Query parameters</param>
+            <param name="searchString">Search anything in the given messages list. Search is performed against all searchable fields.</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <returns></returns>
+            <response code="200">Returns list of selected messages</response>
+            <response code="204">If there are no messages for given PageIndex/PageSize/SearchString combination</response>
+            <response code="401">If the user is not authorized to access this resource</response>
+        </member>
+        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.GetConversation(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Gets conversation between those two users
+            </summary>
+            <param name="username1">User 1</param>
+            <param name="username2">User 2</param>
             <param name="cancellationToken">Token used to explicitly cancel the request.</param>
             <returns></returns>
             <response code="200">Returns list of selected messages</response>

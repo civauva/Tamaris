@@ -10,6 +10,7 @@ namespace Tamaris.Web.Configuration
 
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(/* builder.HostEnvironment.BaseAddress */ url) });
             services.AddScoped<IAdminDataService, AdminDataService>();
+            services.AddScoped<IMessagesDataService, MessagesDataService>();
             services.AddScoped<IDialogService, DialogService>();
         }
     }

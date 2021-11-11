@@ -26,6 +26,10 @@ namespace Tamaris.Entities.Msg
 		/// </summary>
 		public string ReceiverUserId { get; set; }
 		/// <summary>
+		/// subject
+		/// </summary>
+		public string Subject { get; set; }
+		/// <summary>
 		/// message_text
 		/// </summary>
 		public string MessageText { get; set; }

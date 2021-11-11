@@ -90,6 +90,93 @@ namespace Tamaris.API.Controllers.Msg
 
 
 
+		// GET
+		/// <summary>
+		/// Gets paging list with all messages
+		/// </summary>
+		/// <remarks>With pagination, you can optimize fetching the messages. For example, you can fetch 100 pages with 10 pages per page or 10 pages with 100 messages per page.
+		/// Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
+		/// with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
+		/// </remarks>
+		/// <param name="parameters">Query parameters</param>
+		/// <param name="searchString">Search anything in the given messages list. Search is performed against all searchable fields.</param>
+		/// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+
+		/// <returns></returns>
+		/// <response code="200">Returns list of selected messages</response>
+		/// <response code="204">If there are no messages for given PageIndex/PageSize/SearchString combination</response>
+		/// <response code="401">If the user is not authorized to access this resource</response>
+		[HttpGet("ForChat")]
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MessageForChat))]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		public async Task<ActionResult<IEnumerable<MessageForChat>>> GetForChat(CancellationToken cancellationToken = default)
+		{
+			try
+			{
+				var messages = await _unitOfWork.MessagesRepository.GetAllForChatAsync(cancellationToken);
+
+				if (messages != null && messages.Any())
+				{
+					return Ok(messages);
+				}
+
+				return NoContent(); // No messages for given index/page combination
+			}
+			catch (TaskCanceledException)
+			{
+				LogVerbose("User cancelled action.");
+				return NoContent();
+			}
+			catch (Exception ex)
+			{
+				return NoContent();
+			}
+		}
+
+
+		// GET
+		/// <summary>
+		/// Gets conversation between those two users
+		/// </summary>
+		/// <param name="username1">User 1</param>
+		/// <param name="username2">User 2</param>
+		/// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+
+		/// <returns></returns>
+		/// <response code="200">Returns list of selected messages</response>
+		/// <response code="204">If there are no messages for given PageIndex/PageSize/SearchString combination</response>
+		/// <response code="401">If the user is not authorized to access this resource</response>
+		[HttpGet("Conversation/{username1}/{username2}")]
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MessageForChat))]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		public async Task<ActionResult<IEnumerable<MessageForChat>>> GetConversation(string username1, string username2, CancellationToken cancellationToken = default)
+		{
+			try
+			{
+				var messages = await _unitOfWork.MessagesRepository.GetAllBetweenAsync(username1, username2, cancellationToken);
+
+				if (messages != null && messages.Any())
+				{
+					return Ok(messages);
+				}
+
+				return NoContent(); // No messages for given index/page combination
+			}
+			catch (TaskCanceledException)
+			{
+				LogVerbose("User cancelled action.");
+				return NoContent();
+			}
+			catch (Exception ex)
+			{
+				return NoContent();
+			}
+		}
+
+
+
 		// GET api/MessageForSelect/5
 		/// <summary>
 		/// Gets single message
@@ -157,17 +244,29 @@ namespace Tamaris.API.Controllers.Msg
 
 
 			// Checks the validation in the data annotation of the data model
-			if (!ModelState.IsValid)
-			{
-				LogMethodCreateInvalid(message);
-				return new UnprocessableEntityObjectResult(ModelState);
-			}
+			//if (!ModelState.IsValid)
+			//{
+			//	LogMethodCreateInvalid(message);
+			//	return new UnprocessableEntityObjectResult(ModelState);
+			//}
 
 
 			try
 			{
+				// TODO: This is not the most optimal way of obtaining the ID's
+				var userSender = await _unitOfWork.UsersRepository.GetByUsernameAsync(message.SenderUsername);
+				var userReceiver = await _unitOfWork.UsersRepository.GetByUsernameAsync(message.ReceiverUsername);
+
 				// Map the passed objects to database entity/entities
-				var messageEntity = _mapper.Map<Message>(message);
+				var messageEntity = new Message
+                {
+					ReceiverUserId = userReceiver.Id,
+					SenderUserId = userSender.Id,
+					Subject = message.Subject,
+					MessageText = message.MessageText,
+					SentOn = DateTime.Now,
+					IsRead = false,
+                };
 
 				// If there is a need to manipulate the object, this is the place to do it
 				ManipulateOnCreate(messageEntity);

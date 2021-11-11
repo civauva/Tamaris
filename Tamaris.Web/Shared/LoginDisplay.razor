@@ -11,7 +11,12 @@
 <AuthorizeView>
     <Authorized>
         <button class="nav-link btn btn-link" @onclick="OpenProfile">@context.User.Identity?.Name</button>
-        <button class="nav-link btn btn-link" @onclick="BeginSignOut">
+
+        <button class="btn btn-outline-info position-relative" @onclick="OpenMessages">
+            <i class="fa fa-envelope"></i> <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">9</span>
+            </button>
+
+        <button class="nav-link btn btn-link ms-2" @onclick="BeginSignOut">
             <i class="fas fa-power-off"></i>
         </button>
     </Authorized>
@@ -38,5 +43,11 @@
     {
         FormUserProfileDialog.Show();
     }
+
+    private async Task OpenMessages(MouseEventArgs args)
+    {
+        Navigation.NavigateTo("/messages", false);
+    }
+
 }
 
