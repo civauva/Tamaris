@@ -1,52 +1,68 @@
 ﻿@page "/users/overview"
 
 @using Tamaris.Web.Components.Users
+@using Tamaris.Web.Services
 
-<h1 class="display-6">All users</h1>
+@inject CustomStateProvider AuthenticationStateProvider
 
-@if (Users == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
+<AuthorizeView>
+    <Authorized>
 
-    <table class="table table-striped table-sm">
-        <thead>
-            <tr>
-                @*<th></th>*@
-                <th>Username</th>
-                <th>E-mail</th>
-                <th>Company</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in Users)
-            {
-            <tr>
-                @*<td><img src="@user." width="75"  /></td>*@
-                <td>@user.Username</td>
-                <td>@user.Email</td>
-                <td>@user.Company</td>
-                <td>
-                    <div class="col-md-12 text-right">
-          @*              <a href="@($"users/detail/{user.Username}")" class="btn btn-warning table-btn btn-sm float-end">
-                            <i class="fas fa-info-circle"></i>
-                        </a>*@
-                        <a href="@($"users/edit/{user.Username}")" class="btn btn-primary table-btn btn-sm float-end me-1">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                    </div>
-                </td>
+        <h1 class="display-6">All users</h1>
 
-            </tr>
-            }
-        </tbody>
-    </table>
-}
+        @if (Users == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        @*<th></th>*@
+                        <th>Username</th>
+                        <th>E-mail</th>
+                        <th>Company</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Users)
+                    {
+                        <tr>
+                            @*<td><img src="@user." width="75"  /></td>*@
+                            <td>@user.Username</td>
+                            <td>@user.Email</td>
+                            <td>@user.Company</td>
+                            <td>
+                                <div class="col-md-12 text-right">
+                                    @if (@context.User.IsInRole(ADMINISTRATION_ROLE))
+                                    {
+                                        @*<a href="@($"users/detail/{user.Username}")" class="btn btn-warning table-btn btn-sm float-end">
+                                            <i class="fas fa-info-circle"></i>
+                                            </a>*@
+                                        <a href="@($"users/edit/{user.Username}")" class="btn btn-primary table-btn btn-sm float-end me-1">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    }
+                                </div>
+                            </td>
 
-<button @onclick="QuickAddUser" class="btn btn-primary table-btn quick-add-btn">
-    <i class="fas fa-plus"></i>
-</button>
-<AddUserDialog @ref="AddUserForm" CloseEventCallback="@AddUserDialog_OnDialogClose"></AddUserDialog>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        @if (@context.User.IsInRole(ADMINISTRATION_ROLE))
+        {
+            <button @onclick="QuickAddUser" class="btn btn-success table-btn quick-add-btn">
+                <i class="fas fa-plus"></i>
+            </button>
+        }
+
+        <AddUserDialog @ref="FormAddUser" CloseEventCallback="@AddUserDialog_OnDialogClose"></AddUserDialog>
+
+    </Authorized>
+</AuthorizeView>
+

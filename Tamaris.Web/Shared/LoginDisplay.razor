@@ -1,14 +1,19 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Tamaris.Web.Components.Profile
 @using Tamaris.Web.Services
 
 @inject NavigationManager Navigation
 @inject IAccountService AuthorizerService
 
+<link href="css/user-profile.css" rel="stylesheet" />
+
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity?.Name!
-        <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
+        <button class="nav-link btn btn-link" @onclick="OpenProfile">@context.User.Identity?.Name</button>
+        <button class="nav-link btn btn-link" @onclick="BeginSignOut">
+            <i class="fas fa-power-off"></i>
+        </button>
     </Authorized>
     <NotAuthorized>
         <a href="account/login">Sign in</a>
@@ -16,11 +21,22 @@
     </NotAuthorized>
 </AuthorizeView>
 
-@code{
+<UserProfileCard @ref="FormUserProfileDialog"></UserProfileCard>
+
+
+
+@code {
+    protected UserProfileCard FormUserProfileDialog { get; set; }
+
     private async Task BeginSignOut(MouseEventArgs args)
     {
         await AuthorizerService.Logout();
         Navigation.NavigateTo("/", true);
+    }
+
+    private async Task OpenProfile(MouseEventArgs args)
+    {
+        FormUserProfileDialog.Show();
     }
 }
 

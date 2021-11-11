@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Tamaris.Domains.Admin;
@@ -15,6 +16,12 @@ namespace Tamaris.Web.Pages.Users
         [Inject]
         public IMapper Mapper { get; set; }
 
+        [Inject]
+        public IDialogService DialogService { get; set; }
+
+        [CascadingParameter]
+        public IModalService Modal { get; set; }
+    
 
         [Parameter]
         public string Username { get; set; }
@@ -56,7 +63,7 @@ namespace Tamaris.Web.Pages.Users
             }
             else
             {
-                var user = await AdminDataService.GetUserByUsername(Username);
+                var user = await AdminDataService.GetUserByUsernameAsync(Username);
                 User = Mapper.Map<UserForUpdate>(user);
 
                 SetCheckedRoles();
@@ -178,6 +185,11 @@ namespace Tamaris.Web.Pages.Users
 
         protected async Task DeleteUser()
         {
+            var result = await DialogService.IsQuestionAccepted(Modal, $"Are you sure you want to delete {User.Username}?");
+
+            if (!result)
+                return;
+
             await AdminDataService.DeleteUser(User.Username);
 
             StatusClass = "alert-success";

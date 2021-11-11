@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\css\user-profile.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.1.5" />
@@ -32,6 +36,7 @@
   <ItemGroup>
     <None Include="wwwroot\css\edit-form.css" />
     <None Include="wwwroot\css\authentication.css" />
+    <None Include="wwwroot\css\user-profile.css" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tamaris.Domains\Tamaris.Domains.csproj">
