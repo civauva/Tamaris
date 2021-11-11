@@ -15,6 +15,7 @@ namespace Tamaris.Web.Configuration
 
 			CreateMap<UserForSelect, UserForInsert>(AutoMapper.MemberList.Source);
 			CreateMap<UserForSelect, UserForUpdate>(AutoMapper.MemberList.Source);
+			CreateMap<UserForSelect, UserForProfileUpdate>(AutoMapper.MemberList.Source);
 		}
 	}
 }

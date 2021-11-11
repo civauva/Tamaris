@@ -189,6 +189,18 @@
             <response code="400">If upsertion of the user was not successful.</response>   
             <response code="422">If the validation of user failed.</response>   
         </member>
+        <member name="M:Tamaris.API.Controllers.Admin.UsersController.UpdateUserProfile(System.String,Tamaris.Domains.Admin.UserForProfileUpdate,System.Threading.CancellationToken)">
+            <summary>
+            Updates user profile data (no roles changes)
+            </summary>
+            <remarks>This method updates user profile with the form data.</remarks>
+            <param name="id">The key of the user we want to fetch</param>
+            <param name="user">JSON parsed object we want to update</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <response code="204">If update of the user was successful.</response>
+            <response code="400">If update of the user was not successful.</response>   
+            <response code="422">If the validation of user failed.</response>   
+        </member>
         <member name="M:Tamaris.API.Controllers.Admin.UsersController.DeleteUser(System.String,System.Threading.CancellationToken)">
             <summary>
             Deletes user

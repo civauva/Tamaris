@@ -454,6 +454,85 @@ namespace Tamaris.API.Controllers.Admin
 		}
 
 
+
+		// PUT - UPDATE
+		/// <summary>
+		/// Updates user profile data (no roles changes)
+		/// </summary>
+		/// <remarks>This method updates user profile with the form data.</remarks>
+		/// <param name="id">The key of the user we want to fetch</param>
+		/// <param name="user">JSON parsed object we want to update</param>
+		/// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+		/// <response code="204">If update of the user was successful.</response>
+		/// <response code="400">If update of the user was not successful.</response>   
+		/// <response code="422">If the validation of user failed.</response>   
+		[HttpPut("Profile/{id}")]
+		[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserForUpdate))]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+		public async Task<IActionResult> UpdateUserProfile(string id, [FromBody] UserForProfileUpdate user, CancellationToken cancellationToken = default)
+		{
+			LogMethodUpdateEntry(id, user);
+
+			if (user == null)
+			{
+				LogMethodUpdateBadRequest(id, user);
+				return BadRequest();
+			}
+
+
+			// Checks the validation in the data annotation of the data model
+			//if (!ModelState.IsValid)
+			//{
+			//	LogMethodUpdateInvalid(id, user);
+			//	return new UnprocessableEntityObjectResult(ModelState);
+			//}
+
+			try
+			{
+				var userFromRepo = await _unitOfWork.UsersRepository.GetAsync(id);
+				if (userFromRepo != null)
+				{
+					user.Id = id;
+					_mapper.Map(user, userFromRepo);
+
+					if (!string.IsNullOrEmpty(user.CurrentPassword) && !string.IsNullOrEmpty(user.NewPassword))
+						await _userManager.ChangePasswordAsync(userFromRepo, user.CurrentPassword, user.NewPassword);
+
+					// If there is a need to manipulate the object, this is the place to do it
+					ManipulateOnUpdate(userFromRepo);
+
+					// There is no such method like Update in the repository - we are working directly on the database
+					// _unitOfWork.UsersRepository.Update(userFromRepo);
+
+					if (!await _unitOfWork.SaveAsync(cancellationToken))
+					{
+						LogMethodUpdateSaveFailed(id, userFromRepo);
+						return BadRequest($"Updating user id = {id} failed on save.");
+					}
+
+					LogMethodUpdateSaveSuccessful(id);
+
+					return NoContent();
+				}
+				else
+                {
+					return BadRequest($"No such user found");
+                }
+			}
+			catch (TaskCanceledException)
+			{
+				LogVerbose("User cancelled action.");
+				return NoContent();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
+
+
 		#endregion Updating
 
 

@@ -1,0 +1,79 @@
+﻿@if (ShowDialog)
+{
+    <div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="titleLabel">Edit Profile</h5>
+                </div>
+                <div class="modal-body edit-form">
+
+                    <EditForm Model="@User" OnValidSubmit="@HandleValidSubmit">
+
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="form-floating">
+                            <input type="text" class="form-control textbox-alone" id="inputLastName" placeholder="LastName" @bind="User.LastName" />
+                            <label for="inputLastName">LastName:</label>
+                            <ValidationMessage For="@(() => User.LastName)" />
+                        </div>
+
+                        <div class="form-floating">
+                            <input type="text" class="form-control textbox-alone" id="inputFirstName" placeholder="FirstName" @bind="User.FirstName" />
+                            <label for="inputFirstName">FirstName:</label>
+                            <ValidationMessage For="@(() => User.FirstName)" />
+                        </div>
+
+                        <div class="form-floating">
+                            <input type="email" class="form-control textbox-alone" id="inputEmail" placeholder="E-mail" @bind="User.Email" />
+                            <label for="inputEmail">E-mail:</label>
+                            <ValidationMessage For="@(() => User.Email)" />
+                        </div>
+
+                        <div class="form-floating">
+                            <input type="password" class="form-control textbox-alone" id="inputPassword" placeholder="Password" @bind="User.CurrentPassword" />
+                            <label for="inputCurrentPassword">Current password:</label>
+                            <ValidationMessage For="@(() => User.CurrentPassword)" />
+                        </div>
+
+                        <div class="form-floating">
+                            <input type="password" class="form-control textbox-alone" id="inputPassword" placeholder="Password" @bind="User.NewPassword" />
+                            <label for="inputNewPassword">New password:</label>
+                            <ValidationMessage For="@(() => User.NewPassword)" />
+                        </div>
+
+                        <div class="form-floating">
+                            <input type="text" class="form-control textbox-alone" id="inputCompany" placeholder="Company" @bind="User.Company" />
+                            <label for="inputCompany">Company:</label>
+                            <ValidationMessage For="@(() => User.Company)" />
+                        </div>
+
+
+
+
+                        <h6 class="card-title mt-3">Avatar</h6>
+
+
+                        <div class="mt-3 mb-3">
+                            <InputFile OnChange="OnInputFileChange" single />
+
+                            <div class="mt-3 mb-3">
+                                <img src="@thumbnail" class="card-img-bottom avatar" style="border:1px solid #CCCCAA" />
+                            </div>
+                        </div>
+
+
+
+                        <div class="d-flex justify-content-end mt-3">
+                            <button type="submit" class="btn btn-primary me-1">Save</button>
+                            <a class="btn btn-outline-primary ms-1" @onclick="@Close">Close</a>
+                        </div>
+
+                    </EditForm>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}

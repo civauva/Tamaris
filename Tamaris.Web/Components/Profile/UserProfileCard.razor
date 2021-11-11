@@ -10,19 +10,22 @@
                                 <img src="@thumbnail" alt="">
                             </a>
 
-                            <div class="section_heading text-center wow fadeInUp">
-                                <h3><span>@User.FirstName </span> @User.LastName</h3>
-                                <p>@User.Email</p>
-                            </div>
+                            @if (User != null)
+                            {
+                                <div class="section_heading text-center wow fadeInUp">
+                                    <h3><span>@User.FirstName </span> @User.LastName</h3>
+                                    <p>@User.Email</p>
+                                </div>
+                            }
 
                         </div>
 
                         <div class="d-flex justify-content-center mt-3 mb-3">
                             <div>
-                                <a class="btn btn-secondary position-relative m-0" href="#"> <i class="fa fa-user"></i> Edit Profile</a>
+                                <a class="btn btn-secondary position-relative m-0" @onclick="@EditProfile"> <i class="fa fa-user"></i> Edit Profile</a>
                             </div>
 
-                            <a class="btn btn-secondary position-relative" href="#"> <i class="fa fa-calendar"></i> Messages <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">9</span></a>
+                            <a class="btn btn-secondary position-relative" @onclick="@OpenMessages"> <i class="fa fa-calendar"></i> Messages <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">9</span></a>
                         </div>
 
                         <div class="d-flex justify-content-center pb-3">
@@ -36,4 +39,6 @@
             </div>
         </div>
     </div>
+
+    <EditProfileDialog @ref="FormEditProfile" CurrentUser="User" CloseEventCallback="@ChangeUserProfile_OnDialogClose"></EditProfileDialog>
 }

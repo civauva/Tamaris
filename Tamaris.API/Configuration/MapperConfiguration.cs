@@ -19,6 +19,7 @@ namespace Tamaris.API.Configuration
 
 			CreateMap<UserForInsert, User>(AutoMapper.MemberList.Source);
 			CreateMap<UserForUpdate, User>(AutoMapper.MemberList.Source);
+			CreateMap<UserForProfileUpdate, User>(AutoMapper.MemberList.Source);
 
 
 			// Msg

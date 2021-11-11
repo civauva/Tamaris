@@ -60,10 +60,19 @@ namespace Tamaris.Web.Services
         public async Task ModifyUser(UserForUpdate user)
         {
             var modifyResult = await _httpClient.PutAsJsonAsync($"Admin/Users/{user.Id}", user);
-            var modifyContent = await modifyResult.Content.ReadAsStringAsync();
+            // var modifyContent = await modifyResult.Content.ReadAsStringAsync();
 
             return;
         }
+
+        public async Task ModifyUserProfile(UserForProfileUpdate user)
+        {
+            var modifyResult = await _httpClient.PutAsJsonAsync($"Admin/Users/Profile/{user.Id}", user);
+            // var modifyContent = await modifyResult.Content.ReadAsStringAsync();
+
+            return;
+        }
+
 
         public async Task<UserForSelect> DeleteUser(string username)
         {
