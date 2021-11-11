@@ -1,10 +1,10 @@
 ﻿.rodjo {
     color: #797979;
     background: rgba(0,0,0,0.4);
-    font-family: 'Open Sans', sans-serif;
+    /*font-family: 'Open Sans', sans-serif;*/
     padding: 0px !important;
     margin: 0px !important;
-    font-size: 13px;
+    /*font-size: 13px;*/
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-font-smoothing: antialiased;
@@ -349,7 +349,7 @@ ul.summary-list {
     left: -7px;
     position: absolute;
     top: 13px;
-    width: 0;
+    /*width: 0;*/
 }
 
 .activity-desk .arrow-alt {
@@ -364,7 +364,7 @@ ul.summary-list {
     right: -7px;
     position: absolute;
     top: 13px;
-    width: 0;
+    /*width: 0;*/
 }
 
 .activity-desk .album {
