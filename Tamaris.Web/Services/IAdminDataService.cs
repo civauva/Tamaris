@@ -11,6 +11,7 @@ namespace Tamaris.Web.Services
         Task<UserForSelect> GetUserByEmailAsync(string userName);
         Task<UserForSelect> AddUser(UserForInsert user);
         Task ModifyUser(UserForUpdate user);
+        Task ModifyUserProfile(UserForProfileUpdate user);
         Task<UserForSelect> DeleteUser(string username);
         #endregion Users
 

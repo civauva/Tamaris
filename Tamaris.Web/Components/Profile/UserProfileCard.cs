@@ -10,7 +10,7 @@ namespace Tamaris.Web.Components.Profile
         [Inject] CustomStateProvider AuthenticationStateProvider { get; set; }
         [Inject] IAdminDataService AdminDataService { get; set; }
 
-        private async Task SetUser()
+        private async Task SetUserAsync()
         {
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
@@ -25,6 +25,12 @@ namespace Tamaris.Web.Components.Profile
         #endregion Current user
 
 
+        #region Dialogs
+        protected EditProfileDialog FormEditProfile { get; set; }
+        #endregion Dialogs
+
+
+
         public string thumbnail = "";
 
 
@@ -36,7 +42,7 @@ namespace Tamaris.Web.Components.Profile
 
         protected async override Task OnInitializedAsync()
         {
-            await SetUser();
+            await SetUserAsync();
         }
 
         public bool ShowDialog { get; set; }
@@ -53,10 +59,32 @@ namespace Tamaris.Web.Components.Profile
             StateHasChanged();
         }
 
+        /// <summary>
+        /// Opens up the edit profile dialog
+        /// </summary>
+        public void EditProfile()
+        {
+            // ShowDialog = false;
+            // StateHasChanged();
+            FormEditProfile.Show();
+        }
+
+        public void OpenMessages()
+        {
+            ShowDialog = false;
+            StateHasChanged();
+        }
+
         public async void Logout()
         {
             await AuthorizerService.Logout();
             Navigation.NavigateTo("/", true);
+        }
+
+        public async void ChangeUserProfile_OnDialogClose()
+        {
+            await SetUserAsync();
+            StateHasChanged();
         }
     }
 }
