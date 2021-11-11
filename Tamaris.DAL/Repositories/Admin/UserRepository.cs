@@ -81,7 +81,7 @@ namespace Tamaris.DAL.Repositories.Admin
 		}
 
 
-		public async Task<IEnumerable<UserForChat>> GetAllForChatAsync(CancellationToken cancellationToken = default)
+		public async Task<IEnumerable<UserForChat>> GetAllForChatAsync(string excludeUsername, CancellationToken cancellationToken = default)
 		{
 			var query = TamarisDbContext.Users.Select(q => new UserForChat
 			{
@@ -90,7 +90,8 @@ namespace Tamaris.DAL.Repositories.Admin
 				LastName = q.LastName,
 				Email = q.Email,
 				Avatar = q.Avatar
-			});
+			}).
+			Where(u => u.Username != excludeUsername);
 
 			return await query.ToListAsync(cancellationToken);
 		}

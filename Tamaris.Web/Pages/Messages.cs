@@ -40,7 +40,8 @@ namespace Tamaris.Web.Pages
 
         protected async override Task OnInitializedAsync()
         {
-            Users = (await AdminDataService.GetAllUsersForMessaging()).ToList();
+            await SetUserAsync();
+            Users = (await AdminDataService.GetAllUsersForMessaging(UserMe.Username)).ToList();
         }
 
 

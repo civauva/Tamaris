@@ -90,20 +90,21 @@ namespace Tamaris.API.Controllers.Admin
 		/// <summary>
 		/// Gets list with all users for messaging
 		/// </summary>
+		/// <param name="excludeUsername">User to exclude from the list</param>
 		/// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
 		/// <returns>List with all available users for messaging</returns>
 		/// <response code="200">Returns list of selected users</response>
 		/// <response code="204">If there are no users for given PageIndex/PageSize/SearchString combination</response>
 		/// <response code="401">If the user is not authorized to access this resource</response>
-		[HttpGet("ForChat")]
+		[HttpGet("ForChat/{excludeUsername}")]
 		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserForSelect))]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-		public async Task<ActionResult<IEnumerable<UserForChat>>> GetAllForMessaging(CancellationToken cancellationToken = default)
+		public async Task<ActionResult<IEnumerable<UserForChat>>> GetAllForMessaging(string excludeUsername, CancellationToken cancellationToken = default)
 		{
 			try
 			{
-				var users = await _unitOfWork.UsersRepository.GetAllForChatAsync(cancellationToken);
+				var users = await _unitOfWork.UsersRepository.GetAllForChatAsync(excludeUsername, cancellationToken);
 
 				if (users != null && users.Any())
 				{

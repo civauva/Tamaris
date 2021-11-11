@@ -21,10 +21,10 @@ namespace Tamaris.Web.Services
                 (await _httpClient.GetStreamAsync($"Admin/Users"), _options);
         }
 
-        public async Task<IEnumerable<UserForChat>> GetAllUsersForMessaging()
+        public async Task<IEnumerable<UserForChat>> GetAllUsersForMessaging(string excludeUsername)
         {
             return await JsonSerializer.DeserializeAsync<IEnumerable<UserForChat>>
-                (await _httpClient.GetStreamAsync($"Admin/Users/ForChat"), _options);
+                (await _httpClient.GetStreamAsync($"Admin/Users/ForChat/{excludeUsername}"), _options);
         }
 
         public async Task<UserForSelect> GetUserById(int userId)
