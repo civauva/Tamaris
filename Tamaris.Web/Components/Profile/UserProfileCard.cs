@@ -16,9 +16,14 @@ namespace Tamaris.Web.Components.Profile
             var user = authState.User;
             User = await AdminDataService.GetUserByEmailAsync(user.Identity.Name);
 
-            // Set the thumbnail
-            var convertedArray = Convert.ToBase64String(User.Avatar);
-            thumbnail = $"data:image/jpg;base64,{convertedArray}";
+            if (User?.Avatar != null)
+            {
+                // Set the thumbnail
+                var convertedArray = Convert.ToBase64String(User.Avatar);
+                thumbnail = $"data:image/jpg;base64,{convertedArray}";
+            }
+            else
+                thumbnail = "";
         }
 
         public UserForSelect User { get; set; }
