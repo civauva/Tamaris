@@ -11,8 +11,9 @@ namespace Tamaris.DAL.Interfaces.Msg
 		Task<IEnumerable<MessageForChat>> GetAllBetweenAsync(string username1, string username2, int countLastMessages, CancellationToken cancellationToken);
 		Task<PaginatedList<MessageForSelect>> GetPaginatedForSelectAsync(QueryParameters parameters, string searchString, CancellationToken cancellationToken = default);
 		Task<MessageForSelect> GetForSelectAsync(int id, CancellationToken cancellationToken = default);
-		Task MarkReadAsync(List<int> messageIds);
+		Task MarkReadAsync(string receiverEmail, string senderEmail);
 		Task<int> GetCountUnreadMessagesAsync(string receiverUsername, string senderUsername, CancellationToken cancellationToken);
+		Task<int> GetCountUnreadMessagesByEmailAsync(string receiverEmail, string senderEmail, CancellationToken cancellationToken);
 
 		#region Special methods (usually for nested Get API calls)
 

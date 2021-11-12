@@ -243,6 +243,36 @@ namespace Tamaris.API.Controllers.Msg
 		}
 
 
+
+		// GET api/MessageForSelect/5
+		/// <summary>
+		/// Gets count of unread messages
+		/// </summary>
+		/// <remarks>This method returns message with given key</remarks>
+		/// <param name="receiverEmail">We are obtaining the count for this user as receiver</param>
+		/// <param name="senderEmail">If passed, this parameter is used to filter only the messages of this particular sender</param>
+		/// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+		/// <response code="200">Returns found message</response>
+		/// <response code="204">If there is no message found for given key</response>   
+		[HttpGet("CountUnread/ByEmail")]
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(int))]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		public async Task<ActionResult<int>> GetCountUnreadMessagesByEmail(string receiverEmail, string senderEmail, CancellationToken cancellationToken = default)
+		{
+			try
+			{
+				var messagesCount = await _unitOfWork.MessagesRepository.GetCountUnreadMessagesByEmailAsync(receiverEmail, senderEmail, cancellationToken);
+
+				return Ok(messagesCount);
+			}
+			catch (TaskCanceledException)
+			{
+				LogVerbose("User cancelled action.");
+				return NoContent();
+			}
+		}
+
+
 		#endregion Getting data
 
 
@@ -338,7 +368,8 @@ namespace Tamaris.API.Controllers.Msg
 		/// Updates selected messages as read
 		/// </summary>
 		/// <remarks>This method marks selected messages as read.</remarks>
-		/// <param name="messageIds">IDs of the messages we want to mark</param>
+		/// <param name="receiverEmail">Messages where this is receiver e-mail...</param>
+		/// <param name="senderEmail">and messages where this is sender e-mail</param>
 		/// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
 		/// <response code="201">If creation of the message was successful.</response>
 		/// <response code="400">If passed message was null or the creation of the message was not successful.</response>   
@@ -347,15 +378,15 @@ namespace Tamaris.API.Controllers.Msg
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-		public async Task<ActionResult> MarkRead([FromBody] List<int> messageIds, CancellationToken cancellationToken = default)
+		public async Task<ActionResult> MarkRead(string receiverEmail, string senderEmail, CancellationToken cancellationToken = default)
 		{
-			if (messageIds == null)
-				return BadRequest("Cannot mark empty list.");
+			if (string.IsNullOrEmpty(receiverEmail) || string.IsNullOrEmpty(senderEmail))
+				return BadRequest("No email provided.");
 
 			try
 			{
 				// First mark it
-				await _unitOfWork.MessagesRepository.MarkReadAsync(messageIds);
+				await _unitOfWork.MessagesRepository.MarkReadAsync(receiverEmail, senderEmail);
 
 				// Then try to save it
 				if (!await _unitOfWork.SaveAsync(cancellationToken))

@@ -91,7 +91,8 @@
                                     <div class="chat-message clearfix">
                                         <div class="input-group mb-0">
                                             <span class="input-group-text" id="basic-addon1"><i class="fa fa-send"></i></span>
-                                            <input type="text" class="form-control" @onkeydown="@OnKeyPressAsync" @bind="ActiveMessage" placeholder="Enter text here..." aria-label="Message" aria-describedby="basic-addon1">
+                                            <input type="text" class="form-control" @onkeypress="@OnKeyPressAsync" @bind="ActiveMessage" placeholder="Enter text here..." aria-label="Message" aria-describedby="basic-addon1">
+                                            <button class="btn btn-secondary ms-0" @onclick="@OnSendClickAsync">Send</button>
                                         </div>
                                     </div>
                                 }
@@ -104,10 +105,6 @@
                                     <div class="chat-history">
                                     </div>
                                     <div class="chat-message clearfix">
-                                        <div class="input-group mb-0">
-                                            <span class="input-group-text" id="basic-addon1"><i class="fa fa-send"></i></span>
-                                            <input type="text" disabled class="form-control" placeholder="Enter text here..." aria-label="Message" aria-describedby="basic-addon1">
-                                        </div>
                                     </div>
                                 }
                             </div>

@@ -366,6 +366,17 @@
             <response code="200">Returns found message</response>
             <response code="204">If there is no message found for given key</response>   
         </member>
+        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.GetCountUnreadMessagesByEmail(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Gets count of unread messages
+            </summary>
+            <remarks>This method returns message with given key</remarks>
+            <param name="receiverEmail">We are obtaining the count for this user as receiver</param>
+            <param name="senderEmail">If passed, this parameter is used to filter only the messages of this particular sender</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <response code="200">Returns found message</response>
+            <response code="204">If there is no message found for given key</response>   
+        </member>
         <member name="M:Tamaris.API.Controllers.Msg.MessagesController.CreateMessage(Tamaris.Domains.Msg.MessageForInsert,System.Threading.CancellationToken)">
             <summary>
             Creates message
@@ -378,12 +389,13 @@
             <response code="400">If passed message was null or the creation of the message was not successful.</response>   
             <response code="422">If the validation of passed message failed.</response>   
         </member>
-        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.MarkRead(System.Collections.Generic.List{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.MarkRead(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Updates selected messages as read
             </summary>
             <remarks>This method marks selected messages as read.</remarks>
-            <param name="messageIds">IDs of the messages we want to mark</param>
+            <param name="receiverEmail">Messages where this is receiver e-mail...</param>
+            <param name="senderEmail">and messages where this is sender e-mail</param>
             <param name="cancellationToken">Token used to explicitly cancel the request.</param>
             <response code="201">If creation of the message was successful.</response>
             <response code="400">If passed message was null or the creation of the message was not successful.</response>   

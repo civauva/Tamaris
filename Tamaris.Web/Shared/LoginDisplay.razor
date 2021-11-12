@@ -3,8 +3,12 @@
 @using Tamaris.Web.Components.Profile
 @using Tamaris.Web.Services
 
+@implements IDisposable
+
 @inject NavigationManager Navigation
-@inject IAccountService AuthorizerService
+@inject IAccountService AccountService
+@inject CustomStateProvider AuthenticationStateProvider
+@inject IMessagesDataService MessagesDataService
 
 <link href="css/user-profile.css" rel="stylesheet" />
 
@@ -13,8 +17,12 @@
         <button class="nav-link btn btn-link" @onclick="OpenProfile">@context.User.Identity?.Name</button>
 
         <button class="btn btn-outline-info position-relative" @onclick="OpenMessages">
-            <i class="fa fa-envelope"></i> <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">9</span>
-            </button>
+            <i class="fa fa-envelope"></i>
+            @if(CountUnread > 0)
+            {
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">@CountUnread</span>
+            }
+        </button>
 
         <button class="nav-link btn btn-link ms-2" @onclick="BeginSignOut">
             <i class="fas fa-power-off"></i>
@@ -35,7 +43,7 @@
 
     private async Task BeginSignOut(MouseEventArgs args)
     {
-        await AuthorizerService.Logout();
+        await AccountService.Logout();
         Navigation.NavigateTo("/", true);
     }
 
@@ -49,5 +57,41 @@
         Navigation.NavigateTo("/messages", false);
     }
 
+    #region Updating the count of unread messages
+    // Timer that is responsible for obtaining unread messages
+    // I didn't want to imeplement now SignalR because it would be overkill at the moment
+    System.Threading.Timer timer;
+
+    int CountUnread = 0;
+
+    protected override void OnInitialized()
+    {
+        timer = new System.Threading.Timer(async _ =>
+        {
+            CountUnread = await GetCountUnreadAsync();
+            await InvokeAsync(StateHasChanged);
+        }, null, 0, 10000);
+    }
+
+    private async Task<int> GetCountUnreadAsync()
+    {
+        var email = await GetUserEmailAsync();
+        var count = (await MessagesDataService.GetUnreadCountByEmailAsync(email));
+        return count;
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+
+    async Task<string> GetUserEmailAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        return user.Identity!.Name!;
+    }
+
+    #endregion Updating the count of unread messages
 }
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
 using Tamaris.DAL.DbContexts;
@@ -131,8 +126,8 @@ namespace Tamaris.DAL.Repositories.Msg
                 m.ReceiverUser.UserName == username2 &&
                 m.SenderUser.UserName == username1
             )).
-            Take(countLastMessages).
-            OrderBy(m => m.SentOn);
+            OrderByDescending(m => m.SentOn).
+            Take(countLastMessages);
 
             return await query.ToListAsync(cancellationToken);
         }
@@ -203,9 +198,9 @@ namespace Tamaris.DAL.Repositories.Msg
 
 
 
-        public async Task MarkReadAsync(List<int> messageIds)
+        public async Task MarkReadAsync(string receiverEmail, string senderEmail)
         {
-            var messages = await TamarisDbContext.Messages.Where(m => messageIds.Any(id => m.Id == id)).ToListAsync();
+            var messages = await TamarisDbContext.Messages.Where(m => m.ReceiverUser.Email == receiverEmail && m.SenderUser.Email == senderEmail && m.IsRead == false).ToListAsync();
 
             if(messages != null && messages.Count > 0)
             {
@@ -218,12 +213,27 @@ namespace Tamaris.DAL.Repositories.Msg
         {
             int res;
 
-            if(string.IsNullOrEmpty(senderUsername))
+            if(!string.IsNullOrEmpty(senderUsername))
                 res = await TamarisDbContext.Messages.CountAsync(m => m.ReceiverUser.UserName == receiverUsername &&
                 m.SenderUser.UserName == senderUsername &&
                 m.IsRead == false);
             else
                 res = await TamarisDbContext.Messages.CountAsync(m => m.ReceiverUser.UserName == receiverUsername &&
+                m.IsRead == false);
+
+            return res;
+        }
+
+        public async Task<int> GetCountUnreadMessagesByEmailAsync(string receiverEmail, string senderEmail, CancellationToken cancellationToken)
+        {
+            int res;
+
+            if (!string.IsNullOrEmpty(senderEmail))
+                res = await TamarisDbContext.Messages.CountAsync(m => m.ReceiverUser.Email == receiverEmail &&
+                m.SenderUser.Email == senderEmail &&
+                m.IsRead == false);
+            else
+                res = await TamarisDbContext.Messages.CountAsync(m => m.ReceiverUser.Email == receiverEmail &&
                 m.IsRead == false);
 
             return res;

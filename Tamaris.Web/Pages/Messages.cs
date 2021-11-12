@@ -70,11 +70,11 @@ namespace Tamaris.Web.Pages
                 return;
             }
 
-            var conversation = (await MessagesDataService.GetMessagesForChatBetween(UserMe.Username, UserCorrespodent.Username, 5)).ToList();
+            var conversation = (await MessagesDataService.GetMessagesForChatBetween(UserMe.Username, UserCorrespodent.Username, 5)).OrderBy(m => m.SentOn).ToList();
             Conversation = conversation ?? new List<MessageForChat>();
 
             // Mark unread messages read
-            await MessagesDataService.MarkMessagesRead(Conversation.Where(c => c.ReceiverUsername == UserMe.Username && c.IsRead == false).Select(c => c.Id));
+            await MessagesDataService.MarkMessagesRead(UserMe.Email, UserCorrespodent.Email);
 
             StateHasChanged();
         }
@@ -82,23 +82,31 @@ namespace Tamaris.Web.Pages
         public async Task OnKeyPressAsync(KeyboardEventArgs e)
         {
             if (e.Code == "Enter" || e.Code == "NumpadEnter")
+                await SendMessageAsync();
+        }
+
+        public async Task OnSendClickAsync()
+        {
+            await SendMessageAsync();
+        }
+
+        private async Task SendMessageAsync()
+        {
+            if (!string.IsNullOrEmpty(ActiveMessage))
             {
-                if(!string.IsNullOrEmpty(ActiveMessage))
+                var messageForInsert = new MessageForInsert
                 {
-                    var messageForInsert = new MessageForInsert
-                    {
-                        SenderUsername = UserMe.Username,
-                        ReceiverUsername = UserCorrespodent.Username,
-                        MessageText = ActiveMessage,
-                    };
+                    SenderUsername = UserMe.Username,
+                    ReceiverUsername = UserCorrespodent.Username,
+                    MessageText = ActiveMessage,
+                };
 
-                    var sentReception = (await MessagesDataService.AddMessage(messageForInsert));
+                var sentReception = (await MessagesDataService.AddMessage(messageForInsert));
 
-                    ActiveMessage = "";
+                ActiveMessage = "";
 
-                    await LoadMessagesAsync();
+                await LoadMessagesAsync();
 
-                }
             }
         }
     }

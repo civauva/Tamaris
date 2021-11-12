@@ -32,6 +32,19 @@ namespace Tamaris.Web.Services
                 return new List<MessageForChat>();
         }
 
+        public async Task<int> GetUnreadCountAsync(string receiverUsername, string senderUsername = "")
+        {
+            return await JsonSerializer.DeserializeAsync<int>
+                (await _httpClient.GetStreamAsync($"Msg/Messages/CountUnread?receiverUsername={receiverUsername}&senderUsername={senderUsername}"), _options);
+        }
+
+        public async Task<int> GetUnreadCountByEmailAsync(string receiverEmail, string senderEmail = "")
+        {
+            return await JsonSerializer.DeserializeAsync<int>
+                (await _httpClient.GetStreamAsync($"Msg/Messages/CountUnread/ByEmail?receiverEmail={receiverEmail}&senderEmail={senderEmail}"), _options);
+        }
+
+
         public async Task<MessageForSelect> AddMessage(MessageForInsert message)
         {
             var registrationResult = await _httpClient.PostAsJsonAsync("Msg/Messages", message);
@@ -51,9 +64,9 @@ namespace Tamaris.Web.Services
             return result;
         }
 
-        public async Task MarkMessagesRead(IEnumerable<int> messageIds)
+        public async Task MarkMessagesRead(string receiverEmail, string senderEmail)
         {
-            var registrationResult = await _httpClient.PostAsJsonAsync("Msg/Messages/MarkRead", messageIds);
+            var registrationResult = await _httpClient.PostAsync($"Msg/Messages/MarkRead?receiverEmail={receiverEmail}&senderEmail={senderEmail}", null);
             var registrationContent = await registrationResult.Content.ReadAsStringAsync();
         }
     }
