@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Tamaris.Domains.Admin;
 using Tamaris.Web.Services;
+using Tamaris.Web.Services.DataService;
 
 namespace Tamaris.Web.Components.Profile
 {
@@ -16,9 +17,14 @@ namespace Tamaris.Web.Components.Profile
             var user = authState.User;
             User = await AdminDataService.GetUserByEmailAsync(user.Identity.Name);
 
-            // Set the thumbnail
-            var convertedArray = Convert.ToBase64String(User.Avatar);
-            thumbnail = $"data:image/jpg;base64,{convertedArray}";
+            if (User?.Avatar != null)
+            {
+                // Set the thumbnail
+                var convertedArray = Convert.ToBase64String(User.Avatar);
+                thumbnail = $"data:image/jpg;base64,{convertedArray}";
+            }
+            else
+                thumbnail = "";
         }
 
         public UserForSelect User { get; set; }
@@ -38,7 +44,7 @@ namespace Tamaris.Web.Components.Profile
         NavigationManager Navigation { get; set; }
 
         [InjectAttribute]
-        IAccountService AuthorizerService { get; set; }
+        IAccountDataService AuthorizerService { get; set; }
 
         protected async override Task OnInitializedAsync()
         {

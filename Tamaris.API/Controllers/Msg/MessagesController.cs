@@ -90,6 +90,93 @@ namespace Tamaris.API.Controllers.Msg
 
 
 
+		// GET
+		/// <summary>
+		/// Gets paging list with all messages
+		/// </summary>
+		/// <remarks>With pagination, you can optimize fetching the messages. For example, you can fetch 100 pages with 10 pages per page or 10 pages with 100 messages per page.
+		/// Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
+		/// with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
+		/// </remarks>
+		/// <param name="parameters">Query parameters</param>
+		/// <param name="searchString">Search anything in the given messages list. Search is performed against all searchable fields.</param>
+		/// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+
+		/// <returns></returns>
+		/// <response code="200">Returns list of selected messages</response>
+		/// <response code="204">If there are no messages for given PageIndex/PageSize/SearchString combination</response>
+		/// <response code="401">If the user is not authorized to access this resource</response>
+		[HttpGet("ForChat")]
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MessageForChat))]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		public async Task<ActionResult<IEnumerable<MessageForChat>>> GetForChat(CancellationToken cancellationToken = default)
+		{
+			try
+			{
+				var messages = await _unitOfWork.MessagesRepository.GetAllForChatAsync(cancellationToken);
+
+				if (messages != null && messages.Any())
+				{
+					return Ok(messages);
+				}
+
+				return NoContent(); // No messages for given index/page combination
+			}
+			catch (TaskCanceledException)
+			{
+				LogVerbose("User cancelled action.");
+				return NoContent();
+			}
+			catch (Exception ex)
+			{
+				return NoContent();
+			}
+		}
+
+
+		// GET
+		/// <summary>
+		/// Gets conversation between those two users
+		/// </summary>
+		/// <param name="username1">User 1</param>
+		/// <param name="username2">User 2</param>
+		/// <param name="countLastMessages">How many last messages we would like to fetch? (by default 10)</param>
+		/// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+		/// <returns></returns>
+		/// <response code="200">Returns list of selected messages</response>
+		/// <response code="204">If there are no messages for given PageIndex/PageSize/SearchString combination</response>
+		/// <response code="401">If the user is not authorized to access this resource</response>
+		[HttpGet("Conversation")]
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MessageForChat))]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		public async Task<ActionResult<IEnumerable<MessageForChat>>> GetConversation(string username1, string username2, int countLastMessages = 10, CancellationToken cancellationToken = default)
+		{
+			try
+			{
+				var messages = await _unitOfWork.MessagesRepository.GetAllBetweenAsync(username1, username2, countLastMessages, cancellationToken);
+
+				if (messages != null && messages.Any())
+				{
+					return Ok(messages);
+				}
+
+				return NoContent(); // No messages for given index/page combination
+			}
+			catch (TaskCanceledException)
+			{
+				LogVerbose("User cancelled action.");
+				return NoContent();
+			}
+			catch (Exception ex)
+			{
+				return NoContent();
+			}
+		}
+
+
+
 		// GET api/MessageForSelect/5
 		/// <summary>
 		/// Gets single message
@@ -126,6 +213,66 @@ namespace Tamaris.API.Controllers.Msg
 		}
 
 
+
+		// GET api/MessageForSelect/5
+		/// <summary>
+		/// Gets count of unread messages
+		/// </summary>
+		/// <remarks>This method returns message with given key</remarks>
+		/// <param name="receiverUsername">We are obtaining the count for this user as receiver</param>
+		/// <param name="senderUsername">If passed, this parameter is used to filter only the messages of this particular sender</param>
+		/// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+		/// <response code="200">Returns found message</response>
+		/// <response code="204">If there is no message found for given key</response>   
+		[HttpGet("CountUnread")]
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(int))]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		public async Task<ActionResult<int>> GetCountUnreadMessages(string receiverUsername, string senderUsername, CancellationToken cancellationToken = default)
+		{
+			try
+			{
+				var messagesCount = await _unitOfWork.MessagesRepository.GetCountUnreadMessagesAsync(receiverUsername, senderUsername, cancellationToken);
+
+				return Ok(messagesCount);
+			}
+			catch (TaskCanceledException)
+			{
+				LogVerbose("User cancelled action.");
+				return NoContent();
+			}
+		}
+
+
+
+		// GET api/MessageForSelect/5
+		/// <summary>
+		/// Gets count of unread messages
+		/// </summary>
+		/// <remarks>This method returns message with given key</remarks>
+		/// <param name="receiverEmail">We are obtaining the count for this user as receiver</param>
+		/// <param name="senderEmail">If passed, this parameter is used to filter only the messages of this particular sender</param>
+		/// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+		/// <response code="200">Returns found message</response>
+		/// <response code="204">If there is no message found for given key</response>   
+		[HttpGet("CountUnread/ByEmail")]
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(int))]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		public async Task<ActionResult<int>> GetCountUnreadMessagesByEmail(string receiverEmail, string senderEmail, CancellationToken cancellationToken = default)
+		{
+			try
+			{
+				var messagesCount = await _unitOfWork.MessagesRepository.GetCountUnreadMessagesByEmailAsync(receiverEmail, senderEmail, cancellationToken);
+
+				return Ok(messagesCount);
+			}
+			catch (TaskCanceledException)
+			{
+				LogVerbose("User cancelled action.");
+				return NoContent();
+			}
+		}
+
+
 		#endregion Getting data
 
 
@@ -157,17 +304,29 @@ namespace Tamaris.API.Controllers.Msg
 
 
 			// Checks the validation in the data annotation of the data model
-			if (!ModelState.IsValid)
-			{
-				LogMethodCreateInvalid(message);
-				return new UnprocessableEntityObjectResult(ModelState);
-			}
+			//if (!ModelState.IsValid)
+			//{
+			//	LogMethodCreateInvalid(message);
+			//	return new UnprocessableEntityObjectResult(ModelState);
+			//}
 
 
 			try
 			{
+				// TODO: This is not the most optimal way of obtaining the ID's
+				var userSender = await _unitOfWork.UsersRepository.GetByUsernameAsync(message.SenderUsername);
+				var userReceiver = await _unitOfWork.UsersRepository.GetByUsernameAsync(message.ReceiverUsername);
+
 				// Map the passed objects to database entity/entities
-				var messageEntity = _mapper.Map<Message>(message);
+				var messageEntity = new Message
+                {
+					ReceiverUserId = userReceiver.Id,
+					SenderUserId = userSender.Id,
+					Subject = message.Subject,
+					MessageText = message.MessageText,
+					SentOn = DateTime.Now,
+					IsRead = false,
+                };
 
 				// If there is a need to manipulate the object, this is the place to do it
 				ManipulateOnCreate(messageEntity);
@@ -204,101 +363,47 @@ namespace Tamaris.API.Controllers.Msg
 
 
 		#region Updating
-		// PUT - UPDATE
+		// POST api/message
 		/// <summary>
-		/// "Upserts" message (updates it if message exists or it creates new if it doesn't exist)
+		/// Updates selected messages as read
 		/// </summary>
-		/// <remarks>This method updates message with the form data if the message is found in the database, or it creates new message if it is not found.</remarks>
-		/// <param name="id">The key of the message we want to fetch</param>
-		/// <param name="message">JSON parsed object we want to update/insert</param>
+		/// <remarks>This method marks selected messages as read.</remarks>
+		/// <param name="receiverEmail">Messages where this is receiver e-mail...</param>
+		/// <param name="senderEmail">and messages where this is sender e-mail</param>
 		/// <param name="cancellationToken">Token used to explicitly cancel the request.</param>
-		/// <response code="201">If message was not found and its creation was successful.</response>
-		/// <response code="204">If update of the message was successful.</response>
-		/// <response code="400">If upsertion of the message was not successful.</response>   
-		/// <response code="422">If the validation of message failed.</response>   
-		[HttpPut("{id}")]
-		[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(MessageForUpdate))]
-		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		/// <response code="201">If creation of the message was successful.</response>
+		/// <response code="400">If passed message was null or the creation of the message was not successful.</response>   
+		/// <response code="422">If the validation of passed message failed.</response>   
+		[HttpPost("MarkRead")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		[ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]		
-		public async Task<IActionResult> UpdateMessage(int id, [FromBody] MessageForUpdate message, CancellationToken cancellationToken = default)
+		[ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+		public async Task<ActionResult> MarkRead(string receiverEmail, string senderEmail, CancellationToken cancellationToken = default)
 		{
-			LogMethodUpdateEntry(id, message);
-
-			if (message == null)
-			{
-				LogMethodUpdateBadRequest(id, message);
-				return BadRequest();
-			}
-
-
-			// Checks the validation in the data annotation of the data model
-			if (!ModelState.IsValid)
-			{
-				LogMethodUpdateInvalid(id, message);
-				return new UnprocessableEntityObjectResult(ModelState);
-			}
+			if (string.IsNullOrEmpty(receiverEmail) || string.IsNullOrEmpty(senderEmail))
+				return BadRequest("No email provided.");
 
 			try
 			{
-				var messageFromRepo = await _unitOfWork.MessagesRepository.GetAsync(id);
-				if (messageFromRepo == null)
-				{
-					LogMethodUpdateUpserting(id);
-					var messageToCreate = _mapper.Map<Message>(message);
-					messageToCreate.Id = id;
+				// First mark it
+				await _unitOfWork.MessagesRepository.MarkReadAsync(receiverEmail, senderEmail);
 
-					// If there is a need to manipulate the object, this is the place to do it
-					ManipulateOnCreate(messageToCreate);
+				// Then try to save it
+				if (!await _unitOfWork.SaveAsync(cancellationToken))
+					return BadRequest("Updating messages read-status failed on save.");
 
-					_unitOfWork.MessagesRepository.Add(messageToCreate);
-
-					if (!await _unitOfWork.SaveAsync(cancellationToken))
-					{
-						LogMethodUpdateUpsertFailed(id, messageToCreate);
-						return BadRequest($"Upserting message id = {id} failed on save.");
-					}
-
-					// Finally, get the object from the database, because this is what we want to return
-					var messageToReturn  = await _unitOfWork.MessagesRepository.GetForSelectAsync(messageToCreate.Id, cancellationToken);
-
-					LogMethodUpdateUpsertSuccessful(messageToCreate.Id);
-
-
-					return CreatedAtRoute(_defaultGetSingleRoute, // nameof(GetMessage),
-						new { messageToCreate.Id },
-						messageToReturn);
-				}
-				else
-				{
-					message.Id = id;
-					_mapper.Map(message, messageFromRepo);
-
-					// If there is a need to manipulate the object, this is the place to do it
-					ManipulateOnUpdate(messageFromRepo);
-
-					// There is no such method like Update in the repository - we are working directly on the database
-					// _unitOfWork.MessagesRepository.Update(messageFromRepo);
-
-					if (!await _unitOfWork.SaveAsync(cancellationToken))
-					{
-						LogMethodUpdateSaveFailed(id, messageFromRepo);
-						return BadRequest($"Updating message id = {id} failed on save.");
-					}
-
-					LogMethodUpdateSaveSuccessful(id);
-
-					return NoContent();
-				}
+				return Ok();
 			}
-			catch(TaskCanceledException)
+			catch (TaskCanceledException)
 			{
 				LogVerbose("User cancelled action.");
 				return NoContent();
 			}
+			catch(Exception ex)
+            {
+				return BadRequest(ex);
+            }
 		}
-
-
 		#endregion Updating
 
 

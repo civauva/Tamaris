@@ -1,11 +1,12 @@
 ﻿using Tamaris.Domains.Admin;
 
-namespace Tamaris.Web.Services
+namespace Tamaris.Web.Services.DataService
 {
     public interface IAdminDataService
     {
         #region Users
         Task<IEnumerable<UserForSelect>> GetAllUsers();
+        Task<IEnumerable<UserForChat>> GetAllUsersForMessaging(string excludeUsername);
         Task<UserForSelect> GetUserById(int userId);
         Task<UserForSelect> GetUserByUsernameAsync(string userName);
         Task<UserForSelect> GetUserByEmailAsync(string userName);

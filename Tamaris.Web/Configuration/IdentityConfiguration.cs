@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Tamaris.Web.Services;
+using Tamaris.Web.Services.DataService;
 
 namespace Tamaris.Web.Configuration
 {
@@ -11,7 +12,7 @@ namespace Tamaris.Web.Configuration
             services.AddAuthorizationCore();
             services.AddScoped<CustomStateProvider>();
             services.AddScoped<AuthenticationStateProvider, CustomStateProvider>();
-            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IAccountDataService, AccountDataService>();
 
             // This would have been alternative:
 

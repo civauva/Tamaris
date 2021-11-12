@@ -2,41 +2,35 @@
 using System.Text.Json;
 using Tamaris.Domains.Admin;
 
-namespace Tamaris.Web.Services
+namespace Tamaris.Web.Services.DataService
 {
-    public class AdminDataService: IAdminDataService
+    public class AdminDataService: BaseDataService, IAdminDataService
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options;
-
-        public AdminDataService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-            _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        }
+        public AdminDataService(HttpClient httpClient): base(httpClient) {}
 
         public async Task<IEnumerable<UserForSelect>> GetAllUsers()
         {
-            return await JsonSerializer.DeserializeAsync<IEnumerable<UserForSelect>>
-                (await _httpClient.GetStreamAsync($"Admin/Users"), _options);
+            return await GetResultAsync<IEnumerable<UserForSelect>>($"Admin/Users");
+        }
+
+        public async Task<IEnumerable<UserForChat>> GetAllUsersForMessaging(string excludeUsername)
+        {
+            return await GetResultAsync<IEnumerable<UserForChat>>($"Admin/Users/ForChat/{excludeUsername}");
         }
 
         public async Task<UserForSelect> GetUserById(int userId)
         {
-            return await JsonSerializer.DeserializeAsync<UserForSelect>
-                (await _httpClient.GetStreamAsync($"Admin/Users/{userId}"), _options);
+            return await GetResultAsync<UserForSelect>($"Admin/Users/{userId}");
         }
 
         public async Task<UserForSelect> GetUserByUsernameAsync(string userName)
         {
-            return await JsonSerializer.DeserializeAsync<UserForSelect>
-                (await _httpClient.GetStreamAsync($"Admin/Users/ByUsername/{userName}"), _options);
+            return await GetResultAsync<UserForSelect>($"Admin/Users/ByUsername/{userName}");
         }
 
         public async Task<UserForSelect> GetUserByEmailAsync(string userName)
         {
-            return await JsonSerializer.DeserializeAsync<UserForSelect>
-                (await _httpClient.GetStreamAsync($"Admin/Users/ByEmail/{userName}"), _options);
+            return await GetResultAsync<UserForSelect>($"Admin/Users/ByEmail/{userName}");
         }
 
         public async Task<UserForSelect> AddUser(UserForInsert user)
@@ -85,8 +79,7 @@ namespace Tamaris.Web.Services
 
         public async Task<IEnumerable<RoleForSelect>> GetAllRoles()
         {
-            return await JsonSerializer.DeserializeAsync<IEnumerable<RoleForSelect>>
-                (await _httpClient.GetStreamAsync($"Admin/Roles"), _options);
+            return await GetResultAsync<IEnumerable<RoleForSelect>>($"Admin/Roles");
         }
     }
 }

@@ -2,7 +2,7 @@
 
 using Tamaris.Domains.Admin;
 using Tamaris.Web.Components.Users;
-using Tamaris.Web.Services;
+using Tamaris.Web.Services.DataService;
 
 
 namespace Tamaris.Web.Pages.Users
@@ -11,10 +11,10 @@ namespace Tamaris.Web.Pages.Users
     {
         string ADMINISTRATION_ROLE = "Administrators";
 
-        public IEnumerable<UserForSelect> Users { get; set; }
-
         [Inject]
         public IAdminDataService AdminDataService { get; set; }
+
+        public IEnumerable<UserForSelect> Users { get; set; }
 
         protected AddUserDialog FormAddUser { get; set; }
 

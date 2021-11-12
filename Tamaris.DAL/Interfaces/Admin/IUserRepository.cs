@@ -9,6 +9,7 @@ namespace Tamaris.DAL.Interfaces.Admin
 	{
 		Task<User> GetByUsernameAsync(string username, CancellationToken cancellationToken = default);
 		Task<IEnumerable<UserForSelect>> GetAllForSelectAsync(CancellationToken cancellationToken = default);
+		Task<IEnumerable<UserForChat>> GetAllForChatAsync(string excludeUsername, CancellationToken cancellationToken = default);
 		Task<PaginatedList<UserForSelect>> GetPaginatedForSelectAsync(QueryParameters parameters, string searchString, CancellationToken cancellationToken = default);
 		Task<UserForSelect> GetForSelectByIdAsync(string username, CancellationToken cancellationToken = default);
 		Task<UserForSelect> GetForSelectByUsernameAsync(string username, CancellationToken cancellationToken = default);

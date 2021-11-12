@@ -80,6 +80,22 @@ namespace Tamaris.DAL.Repositories.Admin
 			return await query.ToListAsync(cancellationToken);
 		}
 
+
+		public async Task<IEnumerable<UserForChat>> GetAllForChatAsync(string excludeUsername, CancellationToken cancellationToken = default)
+		{
+			var query = TamarisDbContext.Users.Select(q => new UserForChat
+			{
+				Username = q.UserName,
+				FirstName = q.FirstName,
+				LastName = q.LastName,
+				Email = q.Email,
+				Avatar = q.Avatar
+			}).
+			Where(u => u.Username != excludeUsername);
+
+			return await query.ToListAsync(cancellationToken);
+		}
+
 		public async Task<PaginatedList<UserForSelect>> GetPaginatedForSelectAsync(QueryParameters parameters, string searchString, CancellationToken cancellationToken = default)
 		{
 			var query = string.IsNullOrEmpty(searchString) ? UserForSelects : UserForSelectsWhere(GetUserWhereClause(searchString));

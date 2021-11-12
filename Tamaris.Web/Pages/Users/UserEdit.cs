@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Tamaris.Domains.Admin;
 using Tamaris.Web.Models;
 using Tamaris.Web.Services;
+using Tamaris.Web.Services.DataService;
 
 namespace Tamaris.Web.Pages.Users
 {

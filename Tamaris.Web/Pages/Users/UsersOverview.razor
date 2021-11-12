@@ -39,7 +39,7 @@
                             <td>@user.Email</td>
                             <td>@user.Company</td>
                             <td>
-                                <div class="col-md-12 text-right">
+                                <div class="col-md-12 text-end">
                                     @if (@context.User.IsInRole(ADMINISTRATION_ROLE))
                                     {
                                         @*<a href="@($"users/detail/{user.Username}")" class="btn btn-warning table-btn btn-sm float-end">
