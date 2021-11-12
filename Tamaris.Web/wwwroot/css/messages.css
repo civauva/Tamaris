@@ -89,6 +89,14 @@
         width: 40px
     }
 
+    .chat .chat-header .empty-user {
+        float: left;
+        width: 45px;
+        font-size: 40px;
+        color: gainsboro;
+        border-radius: 50%
+    }
+
     .chat .chat-header .chat-about {
         float: left;
         padding-left: 10px
@@ -113,7 +121,7 @@
             }
 
     .chat .chat-history .message-data {
-        margin-bottom: 15px
+        margin-bottom: 15px;
     }
 
         .chat .chat-history .message-data img {

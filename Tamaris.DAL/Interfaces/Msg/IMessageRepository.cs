@@ -2,17 +2,17 @@
 using Tamaris.Domains.Msg;
 using Tamaris.Domains.DataShaping;
 
-
-
 namespace Tamaris.DAL.Interfaces.Msg
 {
 	public interface IMessageRepository : IRepository<Message>
 	{
 		Task<IEnumerable<MessageForSelect>> GetAllForSelectAsync(CancellationToken cancellationToken = default);
 		Task<IEnumerable<MessageForChat>> GetAllForChatAsync(CancellationToken cancellationToken);
-		Task<IEnumerable<MessageForChat>> GetAllBetweenAsync(string username1, string username2, CancellationToken cancellationToken);
+		Task<IEnumerable<MessageForChat>> GetAllBetweenAsync(string username1, string username2, int countLastMessages, CancellationToken cancellationToken);
 		Task<PaginatedList<MessageForSelect>> GetPaginatedForSelectAsync(QueryParameters parameters, string searchString, CancellationToken cancellationToken = default);
 		Task<MessageForSelect> GetForSelectAsync(int id, CancellationToken cancellationToken = default);
+		Task MarkReadAsync(List<int> messageIds);
+		Task<int> GetCountUnreadMessagesAsync(string receiverUsername, string senderUsername, CancellationToken cancellationToken);
 
 		#region Special methods (usually for nested Get API calls)
 

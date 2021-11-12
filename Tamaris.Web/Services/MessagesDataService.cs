@@ -22,10 +22,14 @@ namespace Tamaris.Web.Services
         }
 
 
-        public async Task<IEnumerable<MessageForChat>> GetMessagesForChatBetween(string username1, string username2)
+        public async Task<IEnumerable<MessageForChat>> GetMessagesForChatBetween(string username1, string username2, int countLastMessages = 5)
         {
-            return await JsonSerializer.DeserializeAsync<IEnumerable<MessageForChat>>
-                   (await _httpClient.GetStreamAsync($"Msg/Messages/Conversation/{username1}/{username2}"), _options);
+            var messagesResult = await _httpClient.GetStreamAsync($"Msg/Messages/Conversation?username1={username1}&username2={username2}&countLastMessages={countLastMessages}");
+            
+            if (messagesResult.Length > 0)
+                return await JsonSerializer.DeserializeAsync<IEnumerable<MessageForChat>>(messagesResult, _options);
+            else
+                return new List<MessageForChat>();
         }
 
         public async Task<MessageForSelect> AddMessage(MessageForInsert message)
@@ -47,5 +51,10 @@ namespace Tamaris.Web.Services
             return result;
         }
 
+        public async Task MarkMessagesRead(IEnumerable<int> messageIds)
+        {
+            var registrationResult = await _httpClient.PostAsJsonAsync("Msg/Messages/MarkRead", messageIds);
+            var registrationContent = await registrationResult.Content.ReadAsStringAsync();
+        }
     }
 }

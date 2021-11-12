@@ -9,8 +9,8 @@ namespace Tamaris.Web.Configuration
             string url = configuration["backEndServer"];
 
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(/* builder.HostEnvironment.BaseAddress */ url) });
-            services.AddScoped<IAdminDataService, AdminDataService>();
-            services.AddScoped<IMessagesDataService, MessagesDataService>();
+            services.AddTransient<IAdminDataService, AdminDataService>();
+            services.AddTransient<IMessagesDataService, MessagesDataService>();
             services.AddScoped<IDialogService, DialogService>();
         }
     }

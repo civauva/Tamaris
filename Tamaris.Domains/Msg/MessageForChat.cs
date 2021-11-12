@@ -7,7 +7,8 @@ namespace Tamaris.Domains.Msg
 		}
 
 		public int Id { get; set; } // message_id
-		public string SenderFirstName { get; set; }
+        public string SenderUsername { get; set; }
+        public string SenderFirstName { get; set; }
         public string SenderLastName { get; set; }
         public string SenderFullName => $"{SenderLastName} {SenderFirstName}";
         public byte[] SenderAvatar { get; set; }
@@ -18,6 +19,7 @@ namespace Tamaris.Domains.Msg
         /// </summary>
         public string SenderAvatarSource => GetAvatarSource(SenderAvatar);
 
+        public string ReceiverUsername { get; set; }
         public string ReceiverFirstName { get; set; }
         public string ReceiverLastName { get; set; }
         public string ReceiverFullName => $"{ReceiverLastName} {ReceiverFirstName}";

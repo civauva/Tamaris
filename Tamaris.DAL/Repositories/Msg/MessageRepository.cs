@@ -85,9 +85,11 @@ namespace Tamaris.DAL.Repositories.Msg
             Expression<Func<Message, MessageForChat>> selector = q => new MessageForChat
             {
                 Id = q.Id,
+                SenderUsername = q.SenderUser != null ? q.SenderUser.UserName : "",
                 SenderFirstName = q.SenderUser != null ? q.SenderUser.FirstName : "",
                 SenderLastName = q.SenderUser != null ? q.SenderUser.LastName : "",
                 SenderAvatar = q.SenderUser != null ? q.SenderUser.Avatar : null,
+                ReceiverUsername = q.ReceiverUser != null ? q.ReceiverUser.UserName : "",
                 ReceiverFirstName = q.ReceiverUser != null ? q.ReceiverUser.FirstName : "",
                 ReceiverLastName = q.ReceiverUser != null ? q.ReceiverUser.LastName : "",
                 ReceiverAvatar = q.ReceiverUser != null ? q.ReceiverUser.Avatar : null,
@@ -117,18 +119,19 @@ namespace Tamaris.DAL.Repositories.Msg
             return await query.ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<MessageForChat>> GetAllBetweenAsync(string username1, string username2, CancellationToken cancellationToken)
+        public async Task<IEnumerable<MessageForChat>> GetAllBetweenAsync(string username1, string username2, int countLastMessages, CancellationToken cancellationToken)
         {
             var query = MessageForChatsWhere(m =>
             (
-                m.ReceiverUser.UserName == username1 ||
-                m.ReceiverUser.UserName == username2
-            ) 
-            &&
+                m.ReceiverUser.UserName == username1 &&
+                m.SenderUser.UserName == username2
+            )
+            ||
             (
-                m.SenderUser.UserName == username1 ||
-                m.SenderUser.UserName == username2)
-            ).
+                m.ReceiverUser.UserName == username2 &&
+                m.SenderUser.UserName == username1
+            )).
+            Take(countLastMessages).
             OrderBy(m => m.SentOn);
 
             return await query.ToListAsync(cancellationToken);
@@ -198,5 +201,32 @@ namespace Tamaris.DAL.Repositories.Msg
 
         #endregion Explicit ForSelect methods
 
+
+
+        public async Task MarkReadAsync(List<int> messageIds)
+        {
+            var messages = await TamarisDbContext.Messages.Where(m => messageIds.Any(id => m.Id == id)).ToListAsync();
+
+            if(messages != null && messages.Count > 0)
+            {
+                foreach (var message in messages)
+                    message.IsRead = true;
+            }
+        }
+
+        public async Task<int> GetCountUnreadMessagesAsync(string receiverUsername, string senderUsername, CancellationToken cancellationToken)
+        {
+            int res;
+
+            if(string.IsNullOrEmpty(senderUsername))
+                res = await TamarisDbContext.Messages.CountAsync(m => m.ReceiverUser.UserName == receiverUsername &&
+                m.SenderUser.UserName == senderUsername &&
+                m.IsRead == false);
+            else
+                res = await TamarisDbContext.Messages.CountAsync(m => m.ReceiverUser.UserName == receiverUsername &&
+                m.IsRead == false);
+
+            return res;
+        }
     }
 }

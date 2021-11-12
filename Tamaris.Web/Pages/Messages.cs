@@ -64,8 +64,19 @@ namespace Tamaris.Web.Pages
 
         private async Task LoadMessagesAsync()
         {
-            var conversation = (await MessagesDataService.GetAllMessagesForChat()).ToList();
+            if (UserMe == null || UserCorrespodent == null)
+            {
+                Conversation = new List<MessageForChat>();
+                return;
+            }
+
+            var conversation = (await MessagesDataService.GetMessagesForChatBetween(UserMe.Username, UserCorrespodent.Username, 5)).ToList();
             Conversation = conversation ?? new List<MessageForChat>();
+
+            // Mark unread messages read
+            await MessagesDataService.MarkMessagesRead(Conversation.Where(c => c.ReceiverUsername == UserMe.Username && c.IsRead == false).Select(c => c.Id));
+
+            StateHasChanged();
         }
 
         public async Task OnKeyPressAsync(KeyboardEventArgs e)
@@ -76,14 +87,17 @@ namespace Tamaris.Web.Pages
                 {
                     var messageForInsert = new MessageForInsert
                     {
-                        SenderUsername = "test",
+                        SenderUsername = UserMe.Username,
                         ReceiverUsername = UserCorrespodent.Username,
                         MessageText = ActiveMessage,
                     };
 
                     var sentReception = (await MessagesDataService.AddMessage(messageForInsert));
 
+                    ActiveMessage = "";
+
                     await LoadMessagesAsync();
+
                 }
             }
         }

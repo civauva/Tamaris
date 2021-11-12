@@ -332,12 +332,13 @@
             <response code="204">If there are no messages for given PageIndex/PageSize/SearchString combination</response>
             <response code="401">If the user is not authorized to access this resource</response>
         </member>
-        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.GetConversation(System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.GetConversation(System.String,System.String,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Gets conversation between those two users
             </summary>
             <param name="username1">User 1</param>
             <param name="username2">User 2</param>
+            <param name="countLastMessages">How many last messages we would like to fetch? (by default 10)</param>
             <param name="cancellationToken">Token used to explicitly cancel the request.</param>
             <returns></returns>
             <response code="200">Returns list of selected messages</response>
@@ -354,6 +355,17 @@
             <response code="200">Returns found message</response>
             <response code="204">If there is no message found for given key</response>   
         </member>
+        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.GetCountUnreadMessages(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Gets count of unread messages
+            </summary>
+            <remarks>This method returns message with given key</remarks>
+            <param name="receiverUsername">We are obtaining the count for this user as receiver</param>
+            <param name="senderUsername">If passed, this parameter is used to filter only the messages of this particular sender</param>
+            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
+            <response code="200">Returns found message</response>
+            <response code="204">If there is no message found for given key</response>   
+        </member>
         <member name="M:Tamaris.API.Controllers.Msg.MessagesController.CreateMessage(Tamaris.Domains.Msg.MessageForInsert,System.Threading.CancellationToken)">
             <summary>
             Creates message
@@ -366,18 +378,16 @@
             <response code="400">If passed message was null or the creation of the message was not successful.</response>   
             <response code="422">If the validation of passed message failed.</response>   
         </member>
-        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.UpdateMessage(System.Int32,Tamaris.Domains.Msg.MessageForUpdate,System.Threading.CancellationToken)">
+        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.MarkRead(System.Collections.Generic.List{System.Int32},System.Threading.CancellationToken)">
             <summary>
-            "Upserts" message (updates it if message exists or it creates new if it doesn't exist)
+            Updates selected messages as read
             </summary>
-            <remarks>This method updates message with the form data if the message is found in the database, or it creates new message if it is not found.</remarks>
-            <param name="id">The key of the message we want to fetch</param>
-            <param name="message">JSON parsed object we want to update/insert</param>
+            <remarks>This method marks selected messages as read.</remarks>
+            <param name="messageIds">IDs of the messages we want to mark</param>
             <param name="cancellationToken">Token used to explicitly cancel the request.</param>
-            <response code="201">If message was not found and its creation was successful.</response>
-            <response code="204">If update of the message was successful.</response>
-            <response code="400">If upsertion of the message was not successful.</response>   
-            <response code="422">If the validation of message failed.</response>   
+            <response code="201">If creation of the message was successful.</response>
+            <response code="400">If passed message was null or the creation of the message was not successful.</response>   
+            <response code="422">If the validation of passed message failed.</response>   
         </member>
         <member name="M:Tamaris.API.Controllers.Msg.MessagesController.DeleteMessage(System.Int32,System.Threading.CancellationToken)">
             <summary>
