@@ -2,11 +2,12 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Tamaris.Web.Components.Profile
 @using Tamaris.Web.Services
+@using Tamaris.Web.Services.DataService
 
 @implements IDisposable
 
 @inject NavigationManager Navigation
-@inject IAccountService AccountService
+@inject IAccountDataService AccountService
 @inject CustomStateProvider AuthenticationStateProvider
 @inject IMessagesDataService MessagesDataService
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Tamaris.Domains.Admin;
 using Tamaris.Web.Services;
+using Tamaris.Web.Services.DataService;
 
 namespace Tamaris.Web.Components.Profile
 {
@@ -43,7 +44,7 @@ namespace Tamaris.Web.Components.Profile
         NavigationManager Navigation { get; set; }
 
         [InjectAttribute]
-        IAccountService AuthorizerService { get; set; }
+        IAccountDataService AuthorizerService { get; set; }
 
         protected async override Task OnInitializedAsync()
         {

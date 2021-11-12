@@ -1,13 +1,14 @@
 ﻿@page "/account/login"
 
 @using Tamaris.Domains.Authorization
-@using Tamaris.Web.Services
+@using Tamaris.Web.Services.DataService
+
 
 @attribute [AllowAnonymous]
 
 @layout AuthenticationLayout
 @inject NavigationManager navigationManager
-@inject IAccountService authenticationService
+@inject IAccountDataService authenticationService
 
 
 <EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="loginRequest">

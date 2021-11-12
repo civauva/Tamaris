@@ -2,7 +2,7 @@
 
 using Tamaris.Domains.Admin;
 using Tamaris.Web.Components.Users;
-using Tamaris.Web.Services;
+using Tamaris.Web.Services.DataService;
 
 
 namespace Tamaris.Web.Pages.Users

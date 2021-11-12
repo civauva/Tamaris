@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Tamaris.Domains.Admin;
 using Tamaris.Domains.Msg;
 using Tamaris.Web.Services;
+using Tamaris.Web.Services.DataService;
 
 namespace Tamaris.Web.Pages
 {

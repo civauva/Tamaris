@@ -1,6 +1,6 @@
 ﻿using Tamaris.Domains.Admin;
 
-namespace Tamaris.Web.Services
+namespace Tamaris.Web.Services.DataService
 {
     public interface IAdminDataService
     {

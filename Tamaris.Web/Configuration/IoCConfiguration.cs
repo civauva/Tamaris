@@ -1,4 +1,5 @@
 ﻿using Tamaris.Web.Services;
+using Tamaris.Web.Services.DataService;
 
 namespace Tamaris.Web.Configuration
 {

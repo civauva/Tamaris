@@ -2,34 +2,22 @@
 using System.Text.Json;
 using Tamaris.Domains.Msg;
 
-namespace Tamaris.Web.Services
+namespace Tamaris.Web.Services.DataService
 {
-    public class MessagesDataService : IMessagesDataService
+    public class MessagesDataService : BaseDataService, IMessagesDataService
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options;
-
-        public MessagesDataService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-            _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        }
+        public MessagesDataService(HttpClient httpClient): base(httpClient) { }
 
         public async Task<IEnumerable<MessageForChat>> GetAllMessagesForChat()
         {
-            return await JsonSerializer.DeserializeAsync<IEnumerable<MessageForChat>>
-                (await _httpClient.GetStreamAsync($"Msg/Messages/ForChat"), _options);
+            return await GetResultAsync<IEnumerable<MessageForChat>>($"Msg/Messages/ForChat");
         }
 
 
         public async Task<IEnumerable<MessageForChat>> GetMessagesForChatBetween(string username1, string username2, int countLastMessages = 5)
         {
-            var messagesResult = await _httpClient.GetStreamAsync($"Msg/Messages/Conversation?username1={username1}&username2={username2}&countLastMessages={countLastMessages}");
-            
-            if (messagesResult.Length > 0)
-                return await JsonSerializer.DeserializeAsync<IEnumerable<MessageForChat>>(messagesResult, _options);
-            else
-                return new List<MessageForChat>();
+            var res = await GetResultAsync<IEnumerable<MessageForChat>>($"Msg/Messages/Conversation?username1={username1}&username2={username2}&countLastMessages={countLastMessages}");
+            return res ?? new List<MessageForChat>();
         }
 
         public async Task<int> GetUnreadCountAsync(string receiverUsername, string senderUsername = "")

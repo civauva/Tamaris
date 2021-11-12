@@ -1,22 +1,19 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
+using Microsoft.AspNetCore.Components;
 using Blazored.LocalStorage;
 using Tamaris.Domains.Authorization;
 
-namespace Tamaris.Web.Services
+namespace Tamaris.Web.Services.DataService
 {
-    public class AccountService: IAccountService
+    public class AccountDataService: BaseDataService, IAccountDataService
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options;
         private readonly CustomStateProvider _authStateProvider;
         private readonly ILocalStorageService _localStorage;
 
 
-        public AccountService(HttpClient httpClient, CustomStateProvider authStateProvider, ILocalStorageService localStorage)
+        public AccountDataService(HttpClient httpClient, CustomStateProvider authStateProvider, ILocalStorageService localStorage): base(httpClient)
         {
-            _httpClient = httpClient;
-            _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             _authStateProvider = authStateProvider;
             _localStorage = localStorage;
         }
@@ -97,6 +94,17 @@ namespace Tamaris.Web.Services
 
             return "";
         }
+
+        #region Current user
+        [Inject] CustomStateProvider AuthenticationStateProvider { get; set; }
+
+        public async Task<string> GetUsernameAsync()
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            return user.Identity!.Name!;
+        }
+        #endregion Current user
     }
 }
 
