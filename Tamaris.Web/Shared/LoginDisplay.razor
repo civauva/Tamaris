@@ -1,11 +1,14 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.SignalR.Client
 @using Tamaris.Web.Components.Profile
 @using Tamaris.Web.Services
 @using Tamaris.Web.Services.DataService
 
 @implements IDisposable
+@implements IAsyncDisposable
 
+@inject HubConnection HubConnection
 @inject NavigationManager Navigation
 @inject IAccountDataService AccountService
 @inject CustomStateProvider AuthenticationStateProvider
@@ -84,6 +87,7 @@
     public void Dispose()
     {
         timer?.Dispose();
+        HubConnection.Remove("UnreadCountAll");
     }
 
     async Task<string> GetUserEmailAsync()
@@ -94,5 +98,39 @@
     }
 
     #endregion Updating the count of unread messages
+
+
+    #region SignalR support
+    protected override async Task OnInitializedAsync()
+    {
+        var email = await GetUserEmailAsync();
+        var count = (await MessagesDataService.GetUnreadCountByEmailAsync(email));
+
+            // TODO: error handling, for example when not connected to the server
+        await HubConnection.InvokeAsync("JoinCountUnread", email);
+ 
+        HubConnection.On<int>("CountUnread", count =>
+        {
+            this.CountUnread = count;
+            StateHasChanged();
+        });
+
+        //HubConnection.On<int>("UnreadCountAll", count =>
+        //{
+        //    CountUnread = count;
+        //    StateHasChanged();
+        //});
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        var email = await GetUserEmailAsync();
+
+        HubConnection.Remove("CountUnreadUpdated");
+
+        // TODO: error handling, for example when not connected to the server
+        await HubConnection.InvokeAsync("LeaveCountGroup", email);
+    }
+    #endregion SignalR support
 }
 

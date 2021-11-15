@@ -12,7 +12,8 @@ using Tamaris.Domains.Msg;
 using Tamaris.Entities.Msg;
 using Tamaris.DAL.Interfaces;
 using Tamaris.API.Infrastructure.Attributes;
-
+using Microsoft.AspNetCore.SignalR;
+using Tamaris.API.Hubs;
 
 namespace Tamaris.API.Controllers.Msg
 {
@@ -25,12 +26,17 @@ namespace Tamaris.API.Controllers.Msg
 
 		private readonly string _defaultGetSingleRoute = "GetMsgsMessage";
 
-		public MessagesController(ITamarisUnitOfWork unitOfWork, IMapper mapper)
+		public MessagesController(ITamarisUnitOfWork unitOfWork, IMapper mapper, IHubContext<MessageHub, IMessageHub> messageHub)
 		{
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
-
+			hubContext = messageHub;
 		}
+
+
+		#region SignalR emitting events
+		private readonly IHubContext<MessageHub, IMessageHub> hubContext;
+		#endregion SignalR emitting events
 
 
 		#region Getting data
@@ -292,7 +298,7 @@ namespace Tamaris.API.Controllers.Msg
 		[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(MessageForSelect))]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]		
-		public async Task<ActionResult<MessageForSelect>> CreateMessage([FromBody] MessageForInsert message, CancellationToken cancellationToken = default)
+		public async Task<ActionResult<MessageForSelect>> SendMessage([FromBody] MessageForInsert message, CancellationToken cancellationToken = default)
 		{
 			LogMethodCreateEntry(message);
 
@@ -347,6 +353,9 @@ namespace Tamaris.API.Controllers.Msg
 
 				// Finally, get the object from the database, because this is what we want to return
 				var messageToReturn  = await _unitOfWork.MessagesRepository.GetForSelectAsync(messageEntity.Id, cancellationToken);
+
+				// And then emit it to the SignalR clients
+				await this.hubContext.Clients.All.MessageSent(messageToReturn.Id);
 
 				return CreatedAtRoute(_defaultGetSingleRoute, // nameof(GetMessage),
 					new { messageEntity.Id },

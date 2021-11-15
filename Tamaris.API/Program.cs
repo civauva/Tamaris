@@ -51,6 +51,9 @@ services.AddAutoMapper(typeof(Program));
 LoggingConfiguration.SetupLogger();
 // TODO: services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
 
+// Add support for SignalR
+SignalRConfiguration.SetupSignalR(services);
+
 
 var app = builder.Build();
 
@@ -77,5 +80,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Configure SignalR
+SignalRConfiguration.ConfigureSignalR(app);
 
 app.Run();
