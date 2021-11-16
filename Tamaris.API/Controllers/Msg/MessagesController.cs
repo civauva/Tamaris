@@ -356,7 +356,7 @@ namespace Tamaris.API.Controllers.Msg
 
 				// And then emit it to the SignalR clients
 				// await this.hubContext.Clients.All.MessageSent(messageToReturn.Id);
-				await this.hubContext.Clients.Group(userReceiver.Email).MessageSentToMe();
+				await this.hubContext.Clients.Group(userReceiver.Email).MessageSentToMe(userSender.Email);
 
 				return CreatedAtRoute(_defaultGetSingleRoute, // nameof(GetMessage),
 					new { messageEntity.Id },

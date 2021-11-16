@@ -365,10 +365,5 @@
             <param name="stackFrameIndex">Depth of the stack. For example if you expect that the caller is on the 3rd level from this method, you should pass here number 3.</param>
             <returns>Name of the caller method.</returns>
         </member>
-        <member name="T:Tamaris.API.Services.Email.EmailSender">
-            <summary>
-            https://code-maze.com/password-reset-aspnet-core-identity/
-            </summary>
-        </member>
     </members>
 </doc>

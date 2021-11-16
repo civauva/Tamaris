@@ -11,14 +11,16 @@ namespace Tamaris.API.Hubs
     public class MessageHub: Hub<IMessageHub>
     {
         // These 2 methods will be called from the client
-        public async Task JoinCountUnread(string username)
+        public async Task JoinCountUnread(string email)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, username);
+            if (!string.IsNullOrEmpty(email))
+                await Groups.AddToGroupAsync(Context.ConnectionId, email);
         }
 
-        public async Task LeaveCountUnread(string username)
+        public async Task LeaveCountUnread(string email)
         {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, username);
+            if(!string.IsNullOrEmpty(email))
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, email);
         }
     }
 }

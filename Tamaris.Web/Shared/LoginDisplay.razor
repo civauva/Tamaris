@@ -62,20 +62,7 @@
     }
 
     #region Updating the count of unread messages
-    // Timer that is responsible for obtaining unread messages
-    // I didn't want to imeplement now SignalR because it would be overkill at the moment
-    System.Threading.Timer timer;
-
     int CountUnread = 0;
-
-    protected override void OnInitialized()
-    {
-        //timer = new System.Threading.Timer(async _ =>
-        //{
-        //    CountUnread = await GetCountUnreadAsync();
-        //    await InvokeAsync(StateHasChanged);
-        //}, null, 0, 10000);
-    }
 
     private async Task<int> GetCountUnreadAsync()
     {
@@ -86,7 +73,6 @@
 
     public void Dispose()
     {
-        timer?.Dispose();
         HubConnection.Remove("UnreadCountAll");
     }
 
@@ -103,15 +89,15 @@
     #region SignalR support
     protected override async Task OnInitializedAsync()
     {
+        CountUnread = await GetCountUnreadAsync();
         var email = await GetUserEmailAsync();
-        var count = (await MessagesDataService.GetUnreadCountByEmailAsync(email));
 
         // TODO: error handling, for example when not connected to the server
         await HubConnection.InvokeAsync("JoinCountUnread", email);
  
-        HubConnection.On<int>("MessageSentToMe", count =>
+        HubConnection.On<string>("MessageSentToMe", async senderEmail =>
         {
-            this.CountUnread = count;
+            this.CountUnread = await GetCountUnreadAsync();
             StateHasChanged();
         });
     }
@@ -123,7 +109,8 @@
         HubConnection.Remove("MessageSentToMe");
 
         // TODO: error handling, for example when not connected to the server
-        await HubConnection.InvokeAsync("LeaveCountUnread", email);
+        if(!string.IsNullOrEmpty(email))
+            await HubConnection.InvokeAsync("LeaveCountUnread", email);
     }
     #endregion SignalR support
 }
