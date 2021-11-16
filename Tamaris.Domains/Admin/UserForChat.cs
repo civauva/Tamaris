@@ -17,6 +17,7 @@
         public string FullName => $"{LastName} {FirstName}";
         public string Email { get; set; } // email
 		public byte[] Avatar { get; set; } // avatar
+        public int UnreadCount { get; set; }
 
         /// <summary>
         /// Read-only property that can be used as a source

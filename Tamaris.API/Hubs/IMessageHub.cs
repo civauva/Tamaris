@@ -3,6 +3,6 @@
     public interface IMessageHub
     {
         Task MessageSentToMe(string senderEmail);
-        Task MessageSent(int messageId);
+        Task MessagesRead(string senderEmail);
     }
 }

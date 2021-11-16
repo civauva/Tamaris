@@ -402,6 +402,10 @@ namespace Tamaris.API.Controllers.Msg
 				if (!await _unitOfWork.SaveAsync(cancellationToken))
 					return BadRequest("Updating messages read-status failed on save.");
 
+				// And then emit it to the SignalR clients
+				await this.hubContext.Clients.Group(receiverEmail).MessagesRead(senderEmail);
+
+
 				return Ok();
 			}
 			catch (TaskCanceledException)

@@ -43,6 +43,12 @@
                                                     <i class="fa fa-circle @(user.IsOnline ? "online" : "offline") me-2"></i>
                                                     @user.OnlineStatus
                                                 </div>
+                                                @if (user.UnreadCount > 0)
+                                                {
+                                                    <div>
+                                                        <span class="position-relative top-0 start-100 translate-middle-y badge rounded-pill bg-danger">@user.UnreadCount</span>
+                                                    </div>
+                                                }
                                             </div>
                                         </li>
                                     }

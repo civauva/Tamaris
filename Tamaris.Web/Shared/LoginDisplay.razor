@@ -94,12 +94,19 @@
 
         // TODO: error handling, for example when not connected to the server
         await HubConnection.InvokeAsync("JoinCountUnread", email);
- 
+
         HubConnection.On<string>("MessageSentToMe", async senderEmail =>
         {
             this.CountUnread = await GetCountUnreadAsync();
             StateHasChanged();
         });
+
+        HubConnection.On<string>("MessagesRead", async senderEmail =>
+        {
+            this.CountUnread = await GetCountUnreadAsync();
+            StateHasChanged();
+        });
+
     }
 
     public async ValueTask DisposeAsync()
@@ -107,6 +114,7 @@
         var email = await GetUserEmailAsync();
 
         HubConnection.Remove("MessageSentToMe");
+        HubConnection.Remove("MessagesRead");
 
         // TODO: error handling, for example when not connected to the server
         if(!string.IsNullOrEmpty(email))
