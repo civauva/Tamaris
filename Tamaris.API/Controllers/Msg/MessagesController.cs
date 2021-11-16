@@ -355,7 +355,8 @@ namespace Tamaris.API.Controllers.Msg
 				var messageToReturn  = await _unitOfWork.MessagesRepository.GetForSelectAsync(messageEntity.Id, cancellationToken);
 
 				// And then emit it to the SignalR clients
-				await this.hubContext.Clients.All.MessageSent(messageToReturn.Id);
+				// await this.hubContext.Clients.All.MessageSent(messageToReturn.Id);
+				await this.hubContext.Clients.Group(userReceiver.Email).MessageSentToMe();
 
 				return CreatedAtRoute(_defaultGetSingleRoute, // nameof(GetMessage),
 					new { messageEntity.Id },

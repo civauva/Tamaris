@@ -344,6 +344,14 @@
             <response code="400">If deletion of the message was not successful.</response>   
             <response code="404">If the message was not found.</response>   
         </member>
+        <member name="T:Tamaris.API.Hubs.MessageHub">
+            <summary>
+            No need to implement here the methods defined by ISurveyHub, their purpose is simply
+            to provide a strongly typed interface.
+            Users of IHubContext still have to decide to whom should the events be sent
+            as in: await this.hubContext.Clients.All.SendSurveyUpdated(survey);
+            </summary>
+        </member>
         <member name="T:Tamaris.API.Infrastructure.ApiExplorerVersionConvention">
             <summary>
             This class is used to tell the swagger what class(es) should be grouped within the 

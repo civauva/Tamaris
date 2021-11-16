@@ -70,11 +70,11 @@
 
     protected override void OnInitialized()
     {
-        timer = new System.Threading.Timer(async _ =>
-        {
-            CountUnread = await GetCountUnreadAsync();
-            await InvokeAsync(StateHasChanged);
-        }, null, 0, 10000);
+        //timer = new System.Threading.Timer(async _ =>
+        //{
+        //    CountUnread = await GetCountUnreadAsync();
+        //    await InvokeAsync(StateHasChanged);
+        //}, null, 0, 10000);
     }
 
     private async Task<int> GetCountUnreadAsync()
@@ -106,30 +106,24 @@
         var email = await GetUserEmailAsync();
         var count = (await MessagesDataService.GetUnreadCountByEmailAsync(email));
 
-            // TODO: error handling, for example when not connected to the server
+        // TODO: error handling, for example when not connected to the server
         await HubConnection.InvokeAsync("JoinCountUnread", email);
  
-        HubConnection.On<int>("CountUnread", count =>
+        HubConnection.On<int>("MessageSentToMe", count =>
         {
             this.CountUnread = count;
             StateHasChanged();
         });
-
-        //HubConnection.On<int>("UnreadCountAll", count =>
-        //{
-        //    CountUnread = count;
-        //    StateHasChanged();
-        //});
     }
 
     public async ValueTask DisposeAsync()
     {
         var email = await GetUserEmailAsync();
 
-        HubConnection.Remove("CountUnreadUpdated");
+        HubConnection.Remove("MessageSentToMe");
 
         // TODO: error handling, for example when not connected to the server
-        await HubConnection.InvokeAsync("LeaveCountGroup", email);
+        await HubConnection.InvokeAsync("LeaveCountUnread", email);
     }
     #endregion SignalR support
 }

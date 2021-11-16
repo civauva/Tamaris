@@ -2,7 +2,7 @@
 {
     public interface IMessageHub
     {
-        Task MessageSentToMe(string username);
+        Task MessageSentToMe();
         Task MessageSent(int messageId);
     }
 }

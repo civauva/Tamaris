@@ -25,8 +25,11 @@ namespace Tamaris.Web.Pages
             UserMe = await AdminDataService.GetUserByEmailAsync(user.Identity.Name);
 
             // Set the thumbnail
-            var convertedArray = Convert.ToBase64String(UserMe.Avatar);
-            ThumbnailMe = $"data:image/jpg;base64,{convertedArray}";
+            if (UserMe?.Avatar != null & UserMe.Avatar.Length > 0)
+            {
+                var convertedArray = Convert.ToBase64String(UserMe.Avatar);
+                ThumbnailMe = $"data:image/jpg;base64,{convertedArray}";
+            }
         }
 
         public UserForSelect UserMe { get; set; }
