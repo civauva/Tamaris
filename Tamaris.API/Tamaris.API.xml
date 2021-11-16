@@ -101,23 +101,6 @@
             <response code="400">If deletion of the role was not successful.</response>   
             <response code="404">If the role was not found.</response>   
         </member>
-        <member name="M:Tamaris.API.Controllers.Admin.RolesController.GetAdminUsersForSelectForRoles(System.Int32,Tamaris.Domains.DataShaping.QueryParameters,System.String,System.Threading.CancellationToken)">
-            <summary>
-            Gets paging list with all users (ForSelect) for given role
-            </summary>
-            <remarks>With pagination, you can optimize fetching the users. For example, you can fetch 100 pages with 30 pages per page or 30 pages with 100 users per page.
-            Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
-            with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
-            </remarks>
-            <param name="id">The key of the role we want to fetch the users for</param>
-            <param name="parameters">Query parameters</param>
-            <param name="searchString">Search anything in the given users list. Search is performed against all searchable fields.</param>
-            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
-            <returns></returns>
-            <response code="200">Returns list of selected users</response>
-            <response code="204">If there are no users for given pageIndex/pageSize/searchString combination</response>   
-            <response code="401">If the user is not authorized to access this resource</response>
-        </member>
         <member name="M:Tamaris.API.Controllers.Admin.UsersController.Get(Tamaris.Domains.DataShaping.QueryParameters,System.String,System.Threading.CancellationToken)">
             <summary>
             Gets paging list with all users
@@ -223,57 +206,6 @@
             <response code="400">If deletion of the user was not successful.</response>   
             <response code="404">If the user was not found.</response>   
         </member>
-        <member name="M:Tamaris.API.Controllers.Admin.UsersController.GetAdminRolesForSelectForUsers(System.Int32,Tamaris.Domains.DataShaping.QueryParameters,System.String,System.Threading.CancellationToken)">
-            <summary>
-            Gets paging list with all roles (ForSelect) for given user
-            </summary>
-            <remarks>With pagination, you can optimize fetching the roles. For example, you can fetch 100 pages with 30 pages per page or 30 pages with 100 roles per page.
-            Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
-            with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
-            </remarks>
-            <param name="id">The key of the user we want to fetch the roles for</param>
-            <param name="parameters">Query parameters</param>
-            <param name="searchString">Search anything in the given roles list. Search is performed against all searchable fields.</param>
-            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
-            <returns></returns>
-            <response code="200">Returns list of selected roles</response>
-            <response code="204">If there are no roles for given pageIndex/pageSize/searchString combination</response>   
-            <response code="401">If the user is not authorized to access this resource</response>
-        </member>
-        <member name="M:Tamaris.API.Controllers.Admin.UsersController.GetMsgMessagesForSelectForReceiverUserForReceiverUser(System.String,Tamaris.Domains.DataShaping.QueryParameters,System.String,System.Threading.CancellationToken)">
-            <summary>
-            Gets paging list with all messages (ForSelect) for given user
-            </summary>
-            <remarks>With pagination, you can optimize fetching the messages. For example, you can fetch 100 pages with 30 pages per page or 30 pages with 100 messages per page.
-            Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
-            with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
-            </remarks>
-            <param name="id">The key of the user we want to fetch the messages for</param>
-            <param name="parameters">Query parameters</param>
-            <param name="searchString">Search anything in the given messages list. Search is performed against all searchable fields.</param>
-            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
-            <returns></returns>
-            <response code="200">Returns list of selected messages</response>
-            <response code="204">If there are no messages for given pageIndex/pageSize/searchString combination</response>   
-            <response code="401">If the user is not authorized to access this resource</response>
-        </member>
-        <member name="M:Tamaris.API.Controllers.Admin.UsersController.GetMsgMessagesForSelectForSenderUserForSenderUser(System.String,Tamaris.Domains.DataShaping.QueryParameters,System.String,System.Threading.CancellationToken)">
-            <summary>
-            Gets paging list with all messages (ForSelect) for given user
-            </summary>
-            <remarks>With pagination, you can optimize fetching the messages. For example, you can fetch 100 pages with 30 pages per page or 30 pages with 100 messages per page.
-            Additionally, if you opt to use the pagination (you provide the values for pageIndex and pageSize), this method will also include X-Pagination header
-            with additional information about the result like totalPages, currentPage, next-/previous link, has next-/previous link.
-            </remarks>
-            <param name="id">The key of the user we want to fetch the messages for</param>
-            <param name="parameters">Query parameters</param>
-            <param name="searchString">Search anything in the given messages list. Search is performed against all searchable fields.</param>
-            <param name="cancellationToken">Token used to explicitly cancel the request.</param>
-            <returns></returns>
-            <response code="200">Returns list of selected messages</response>
-            <response code="204">If there are no messages for given pageIndex/pageSize/searchString combination</response>   
-            <response code="401">If the user is not authorized to access this resource</response>
-        </member>
         <member name="M:Tamaris.API.Controllers.BaseController.CreatePagingHeader``1(Tamaris.Domains.DataShaping.PaginatedList{``0}@)">
             <summary>
             Creates pagination header that the client can use to navigate through paginated list
@@ -377,7 +309,7 @@
             <response code="200">Returns found message</response>
             <response code="204">If there is no message found for given key</response>   
         </member>
-        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.CreateMessage(Tamaris.Domains.Msg.MessageForInsert,System.Threading.CancellationToken)">
+        <member name="M:Tamaris.API.Controllers.Msg.MessagesController.SendMessage(Tamaris.Domains.Msg.MessageForInsert,System.Threading.CancellationToken)">
             <summary>
             Creates message
             </summary>
@@ -412,6 +344,14 @@
             <response code="400">If deletion of the message was not successful.</response>   
             <response code="404">If the message was not found.</response>   
         </member>
+        <member name="T:Tamaris.API.Hubs.MessageHub">
+            <summary>
+            No need to implement here the methods defined by ISurveyHub, their purpose is simply
+            to provide a strongly typed interface.
+            Users of IHubContext still have to decide to whom should the events be sent
+            as in: await this.hubContext.Clients.All.SendSurveyUpdated(survey);
+            </summary>
+        </member>
         <member name="T:Tamaris.API.Infrastructure.ApiExplorerVersionConvention">
             <summary>
             This class is used to tell the swagger what class(es) should be grouped within the 
@@ -424,11 +364,6 @@
             </summary>
             <param name="stackFrameIndex">Depth of the stack. For example if you expect that the caller is on the 3rd level from this method, you should pass here number 3.</param>
             <returns>Name of the caller method.</returns>
-        </member>
-        <member name="T:Tamaris.API.Services.Email.EmailSender">
-            <summary>
-            https://code-maze.com/password-reset-aspnet-core-identity/
-            </summary>
         </member>
     </members>
 </doc>

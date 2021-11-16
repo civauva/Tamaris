@@ -19,6 +19,9 @@ IdentityConfiguration.Configure(services);
 // Configuring dependency injection
 IoCConfiguration.Configure(services, configuration);
 
+// Configure SignalR
+SignalRConfiguration.Configure(services, configuration);
+
 // Configuring AutoMapper
 services.AddAutoMapper(typeof(Program));
 

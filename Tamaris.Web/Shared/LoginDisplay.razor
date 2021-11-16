@@ -1,11 +1,14 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.SignalR.Client
 @using Tamaris.Web.Components.Profile
 @using Tamaris.Web.Services
 @using Tamaris.Web.Services.DataService
 
 @implements IDisposable
+@implements IAsyncDisposable
 
+@inject HubConnection HubConnection
 @inject NavigationManager Navigation
 @inject IAccountDataService AccountService
 @inject CustomStateProvider AuthenticationStateProvider
@@ -59,20 +62,7 @@
     }
 
     #region Updating the count of unread messages
-    // Timer that is responsible for obtaining unread messages
-    // I didn't want to imeplement now SignalR because it would be overkill at the moment
-    System.Threading.Timer timer;
-
     int CountUnread = 0;
-
-    protected override void OnInitialized()
-    {
-        timer = new System.Threading.Timer(async _ =>
-        {
-            CountUnread = await GetCountUnreadAsync();
-            await InvokeAsync(StateHasChanged);
-        }, null, 0, 10000);
-    }
 
     private async Task<int> GetCountUnreadAsync()
     {
@@ -83,7 +73,7 @@
 
     public void Dispose()
     {
-        timer?.Dispose();
+        HubConnection.Remove("UnreadCountAll");
     }
 
     async Task<string> GetUserEmailAsync()
@@ -94,5 +84,42 @@
     }
 
     #endregion Updating the count of unread messages
+
+
+    #region SignalR support
+    protected override async Task OnInitializedAsync()
+    {
+        CountUnread = await GetCountUnreadAsync();
+        var email = await GetUserEmailAsync();
+
+        // TODO: error handling, for example when not connected to the server
+        await HubConnection.InvokeAsync("JoinCountUnread", email);
+
+        HubConnection.On<string>("MessageSentToMe", async senderEmail =>
+        {
+            this.CountUnread = await GetCountUnreadAsync();
+            StateHasChanged();
+        });
+
+        HubConnection.On<string>("MessagesRead", async senderEmail =>
+        {
+            this.CountUnread = await GetCountUnreadAsync();
+            StateHasChanged();
+        });
+
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        var email = await GetUserEmailAsync();
+
+        HubConnection.Remove("MessageSentToMe");
+        HubConnection.Remove("MessagesRead");
+
+        // TODO: error handling, for example when not connected to the server
+        if(!string.IsNullOrEmpty(email))
+            await HubConnection.InvokeAsync("LeaveCountUnread", email);
+    }
+    #endregion SignalR support
 }
 

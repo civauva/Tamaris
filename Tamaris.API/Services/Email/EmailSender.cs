@@ -4,9 +4,6 @@ using Tamaris.API.Services.Email.Interfaces;
 
 namespace Tamaris.API.Services.Email
 {
-    /// <summary>
-    /// https://code-maze.com/password-reset-aspnet-core-identity/
-    /// </summary>
     public class EmailSender: IEmailSender
     {
         private readonly EmailParameters _emailConfig;
