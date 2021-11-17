@@ -84,11 +84,11 @@
                                                 @foreach (var message in Conversation)
                                                 {
                                                     <li class="clearfix">
-                                                        <div class="message-data @(message.SenderUsername == UserCorrespodent.Username ? "text-end" : "")">
+                                                        <div class="message-data @(message.SenderUsername != UserCorrespodent.Username ? "text-end" : "")">
                                                             <span class="message-data-time">@message.SentOn</span>
                                                             <img src="@message.SenderAvatarSource" alt="avatar">
                                                         </div>
-                                                        <div class="message @(message.SenderUsername == UserCorrespodent.Username ? "other-message float-right" : "my-message")"> @message.MessageText </div>
+                                                        <div class="message @(message.SenderUsername != UserCorrespodent.Username ? "other-message float-right" : "my-message")"> @message.MessageText </div>
                                                     </li>
                                                 }
                                             </ul>
