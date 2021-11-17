@@ -1,11 +1,7 @@
 namespace Tamaris.Domains.Msg
 {
-	public class MessageForChat : BaseDomain 
+	public record MessageForChat : BaseDomain 
 	{
-		public MessageForChat()
-		{
-		}
-
 		public int Id { get; set; } // message_id
         public string SenderUsername { get; set; }
         public string SenderFirstName { get; set; }

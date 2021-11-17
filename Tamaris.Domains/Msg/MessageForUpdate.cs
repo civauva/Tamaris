@@ -1,17 +1,7 @@
-using System;
-using System.Collections.Generic;
-using Tamaris.Domains.Admin;
-
-
-
 namespace Tamaris.Domains.Msg
 {
-	public class MessageForUpdate : BaseDomain 
+	public record MessageForUpdate : BaseDomain 
 	{
-		public MessageForUpdate()
-		{
-		}
-
 		public int Id { get; set; } // message_id
 		public int SenderUserId { get; set; } // sender_user_id
 		public int ReceiverUserId { get; set; } // receiver_user_id

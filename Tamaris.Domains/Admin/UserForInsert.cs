@@ -1,6 +1,6 @@
 ﻿namespace Tamaris.Domains.Admin
 {
-	public class UserForInsert : BaseDomain
+	public record UserForInsert : BaseDomain
 	{
 		public string Username { get; set; } // username
 		public string FirstName { get; set; } // first_name

@@ -2,7 +2,7 @@
 
 namespace Tamaris.Domains.Authorization
 {
-    public class ResetPasswordRequest
+    public record ResetPasswordRequest
     {
         [Required]
         [DataType(DataType.Password)]

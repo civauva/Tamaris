@@ -1,6 +1,6 @@
 ﻿namespace Tamaris.Domains.Admin
 {
-	public class UserForUpdate : BaseDomain
+	public record UserForUpdate : BaseDomain
 	{
 		public string Id { get; set; } // user_id
 		public string Username { get; set; } // username

@@ -1,6 +1,6 @@
 namespace Tamaris.Domains.Msg
 {
-	public class MessageForInsert : BaseDomain 
+	public record MessageForInsert : BaseDomain 
 	{
 		public MessageForInsert()
 		{

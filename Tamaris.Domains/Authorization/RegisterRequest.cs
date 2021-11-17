@@ -2,7 +2,7 @@
 
 namespace Tamaris.Domains.Authorization
 {
-    public class RegisterRequest
+    public record RegisterRequest
     {
         [Required]
         public string UserName { get; set; }

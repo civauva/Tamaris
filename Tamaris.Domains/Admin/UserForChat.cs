@@ -1,6 +1,6 @@
 ﻿namespace Tamaris.Domains.Admin
 {
-	public class UserForChat : BaseDomain
+	public record UserForChat : BaseDomain
 	{
         public UserForChat()
         {

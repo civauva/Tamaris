@@ -2,7 +2,7 @@
 
 namespace Tamaris.Web.Models
 {
-    public class RoleForCheck: RoleForSelect
+    public record RoleForCheck : RoleForSelect
     {
         public bool IsChecked { get; set; }
     }

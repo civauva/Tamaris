@@ -1,6 +1,6 @@
 namespace Tamaris.Domains.Msg
 {
-	public class MessageForSelect : BaseDomain 
+	public record MessageForSelect : BaseDomain 
 	{
 		public int Id { get; set; } // message_id
 		public string SenderUserId { get; set; } // sender_user_id
