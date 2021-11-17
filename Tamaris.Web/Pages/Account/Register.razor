@@ -1,5 +1,6 @@
 ﻿@page "/account/register"
 
+@using Blazored.FluentValidation
 @using Tamaris.Domains.Authorization
 @using Tamaris.Web.Services
 @using Tamaris.Web.Services.DataService
@@ -12,7 +13,9 @@
 @inject IDialogService dialogService
 
 <EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="registerRequest">
-    <DataAnnotationsValidator />
+    @*<DataAnnotationsValidator />*@
+    <FluentValidationValidator />
+
 
     <div class="main-form">
         <div class="text-center">

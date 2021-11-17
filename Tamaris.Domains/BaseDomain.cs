@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Tamaris.Domains
+﻿namespace Tamaris.Domains
 {
-    public class BaseDomain
+    public record BaseDomain
     {
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Tamaris.Domains.Authorization
 {
-    public class AuthorizationResponse
+    public record AuthorizationResponse
     {
         public bool IsAuthorized { get; set; }
         public string ErrorMessage { get; set; }

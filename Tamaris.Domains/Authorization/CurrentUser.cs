@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Tamaris.Domains.Authorization
+﻿namespace Tamaris.Domains.Authorization
 {
-    public class CurrentUser
+    public record CurrentUser
     {
         public bool IsAuthenticated { get; set; }
         public string UserName { get; set; }

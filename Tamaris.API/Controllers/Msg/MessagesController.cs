@@ -310,11 +310,11 @@ namespace Tamaris.API.Controllers.Msg
 
 
 			// Checks the validation in the data annotation of the data model
-			//if (!ModelState.IsValid)
-			//{
-			//	LogMethodCreateInvalid(message);
-			//	return new UnprocessableEntityObjectResult(ModelState);
-			//}
+			if (!ModelState.IsValid)
+			{
+				LogMethodCreateInvalid(message);
+				return new UnprocessableEntityObjectResult(ModelState);
+			}
 
 
 			try

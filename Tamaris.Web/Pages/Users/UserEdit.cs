@@ -22,7 +22,10 @@ namespace Tamaris.Web.Pages.Users
 
         [CascadingParameter]
         public IModalService Modal { get; set; }
-    
+
+        public string Error { get; set; }
+
+
 
         [Parameter]
         public string Username { get; set; }
@@ -155,7 +158,19 @@ namespace Tamaris.Web.Pages.Users
             if (string.IsNullOrEmpty(User.Id)) // new
             {
                 var userForInsert = Mapper.Map<UserForInsert>(User);
-                var addedEmployee = await AdminDataService.AddUser(userForInsert);
+                UserForSelect? addedEmployee = null;
+
+                try
+                {
+                    addedEmployee = await AdminDataService.AddUser(userForInsert);
+                }
+                catch (Exception ex)
+                {
+                    Error = ex.Message;
+                }
+
+
+
                 if (addedEmployee != null)
                 {
                     StatusClass = "alert-success";
@@ -171,10 +186,18 @@ namespace Tamaris.Web.Pages.Users
             }
             else
             {
-                await AdminDataService.ModifyUser(User);
-                StatusClass = "alert-success";
-                Message = "User updated successfully.";
-                Saved = true;
+                try
+                {
+                    await AdminDataService.ModifyUser(User);
+
+                    StatusClass = "alert-success";
+                    Message = "User updated successfully.";
+                    Saved = true;
+                }
+                catch (Exception ex)
+                {
+                    Error = ex.Message;
+                }
             }
         }
 

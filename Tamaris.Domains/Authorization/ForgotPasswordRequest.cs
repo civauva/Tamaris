@@ -2,7 +2,7 @@
 
 namespace Tamaris.Domains.Authorization
 {
-    public class ForgotPasswordRequest
+    public record ForgotPasswordRequest
     {
         [Required]
         [EmailAddress]

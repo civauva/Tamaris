@@ -1,9 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Tamaris.Domains.Authorization
 {
-    public class LoginRequest
+    public record LoginRequest
     {
         [Required]
         public string UserName { get; set; }
