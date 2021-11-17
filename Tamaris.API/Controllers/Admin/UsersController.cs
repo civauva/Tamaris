@@ -280,11 +280,11 @@ namespace Tamaris.API.Controllers.Admin
 
 
 			// Checks the validation in the data annotation of the data model
-			//if (!ModelState.IsValid)
-			//{
-			//	LogMethodCreateInvalid(user);
-			//	return new UnprocessableEntityObjectResult(ModelState);
-			//}
+			if (!ModelState.IsValid)
+			{
+				LogMethodCreateInvalid(user);
+				return new UnprocessableEntityObjectResult(ModelState);
+			}
 
 
 			try
@@ -380,11 +380,11 @@ namespace Tamaris.API.Controllers.Admin
 
 
 			// Checks the validation in the data annotation of the data model
-			//if (!ModelState.IsValid)
-			//{
-			//	LogMethodUpdateInvalid(id, user);
-			//	return new UnprocessableEntityObjectResult(ModelState);
-			//}
+			if (!ModelState.IsValid)
+			{
+				LogMethodUpdateInvalid(id, user);
+				return new UnprocessableEntityObjectResult(ModelState);
+			}
 
 			try
 			{
@@ -518,11 +518,11 @@ namespace Tamaris.API.Controllers.Admin
 
 
 			// Checks the validation in the data annotation of the data model
-			//if (!ModelState.IsValid)
-			//{
-			//	LogMethodUpdateInvalid(id, user);
-			//	return new UnprocessableEntityObjectResult(ModelState);
-			//}
+			if (!ModelState.IsValid)
+			{
+				LogMethodUpdateInvalid(id, user);
+				return new UnprocessableEntityObjectResult(ModelState);
+			}
 
 			try
 			{

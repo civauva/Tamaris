@@ -8,7 +8,7 @@
 		public string Email { get; set; } // email
 		public string Password { get; set; } // password
 		public string Company { get; set; } // company
-		public byte[] Avatar { get; set; } // avatar
+		public byte[]? Avatar { get; set; } // avatar
 
 		public List<string> Roles { get; set; }
 	}

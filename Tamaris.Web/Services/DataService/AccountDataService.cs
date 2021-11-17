@@ -65,7 +65,9 @@ namespace Tamaris.Web.Services.DataService
 
             if (!registrationResult.IsSuccessStatusCode && !string.IsNullOrEmpty(registrationContent))
             {
-                var result = JsonSerializer.Deserialize<RegisterResponse>(registrationContent, _options);
+                var result = new RegisterResponse {  IsRegistrationSuccessful = false };
+                var errors = new List<string> { registrationContent };
+                result.Errors = errors;
                 return result;
             }
 

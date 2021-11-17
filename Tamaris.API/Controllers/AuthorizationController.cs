@@ -110,6 +110,13 @@ namespace Tamaris.API.Controllers
                 if (requestModel == null)
                     return BadRequest();
 
+                // Checks the validation in the data annotation of the data model
+                if (!ModelState.IsValid)
+                {
+                    LogMethodCreateInvalid(requestModel);
+                    return new UnprocessableEntityObjectResult(ModelState);
+                }
+
                 var user = new User
                 {
                     UserName = requestModel.UserName,

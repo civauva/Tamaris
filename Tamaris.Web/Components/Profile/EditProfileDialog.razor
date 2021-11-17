@@ -1,4 +1,5 @@
-﻿@if (ShowDialog)
+﻿@using Blazored.FluentValidation
+@if (ShowDialog)
 {
     <div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -10,8 +11,10 @@
 
                     <EditForm Model="@User" OnValidSubmit="@HandleValidSubmit">
 
-                        <DataAnnotationsValidator />
-                        <ValidationSummary />
+                        <FluentValidationValidator />
+
+                        @*<DataAnnotationsValidator />
+                        <ValidationSummary />*@
 
                         <div class="form-floating">
                             <input type="email" class="form-control textbox-alone" id="inputEmail" placeholder="E-mail" @bind="User.Email" readonly="readonly" />

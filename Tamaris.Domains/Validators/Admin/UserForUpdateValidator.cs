@@ -7,7 +7,8 @@ namespace Tamaris.Domains.Validators.Admin
 	{
 		public UserForUpdateValidator()
 		{
-
+			RuleFor(x => x.Username).MinimumLength(5);
+			RuleFor(x => x.Email).MinimumLength(7).EmailAddress();
 		}
 	}
 }

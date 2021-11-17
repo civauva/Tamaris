@@ -1,27 +1,24 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+﻿using System.Reflection;
 using Microsoft.OpenApi.Models;
 
+using FluentValidation.AspNetCore;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
-using Swashbuckle.AspNetCore.Swagger;
-
+using MicroElements.Swashbuckle.FluentValidation;
+using Tamaris.Domains;
 
 namespace Tamaris.API.Configuration
 {
-    public static class SwaggerConfiguration
-    {
+	public static class SwaggerConfiguration
+	{
 		const string mainVersion = "v1";
 
-        /// <summary>
-        /// Register the Swagger generator, defining 1 or more Swagger documents
-        /// </summary>
-        internal static void RegisterSwagger(IServiceCollection services)
-        {
-            services.AddSwaggerGen(c =>
-            {
+		/// <summary>
+		/// Register the Swagger generator, defining 1 or more Swagger documents
+		/// </summary>
+		internal static void RegisterSwagger(IServiceCollection services)
+		{
+			services.AddSwaggerGen(c =>
+			{
 				c.SwaggerDoc("v1", CreateSwaggerInfo(VersionInfo, "Tamaris API"));
 
 				// Specify our operation filter here - it is going to add standard header parameters in Swagger documents
@@ -40,46 +37,54 @@ namespace Tamaris.API.Configuration
 				c.IncludeXmlComments(xmlPath);
 			});
 
+			// Adds fluent validators to Asp.net
+			services.AddFluentValidation(c =>
+			   {
+				   c.RegisterValidatorsFromAssemblyContaining<BaseDomain>();
+				   // Optionally set validator factory if you have problems with scope resolve inside validators.
+				   c.ValidatorFactoryType = typeof(HttpContextServiceProviderValidatorFactory);
+			   });
+
 			// Adds FluentValidationRules staff to Swagger. (Minimal configuration)
 			services.AddFluentValidationRulesToSwagger();
 		}
 
-        private static OpenApiInfo CreateSwaggerInfo(string version, string title, string description = null)
-        {
-            return new OpenApiInfo
-            {
-                Version = version,
-                Title = title,
-                Description = description ?? "Restful API for Tamaris Project",
-                // TermsOfService = "None",
-                Contact = new OpenApiContact()
-                {
-                    Name = "John Doe",
-                    Email = "dont@spam.me",
-                    Url = new Uri("http://localhost/api/v1/")
-                },
-                License = new OpenApiLicense
-                {
-                    Name = "ABC",
-                    Url = new Uri("http://www.unicef.com")
-                }
-            };
-        }
+		private static OpenApiInfo CreateSwaggerInfo(string version, string title, string description = null)
+		{
+			return new OpenApiInfo
+			{
+				Version = version,
+				Title = title,
+				Description = description ?? "Restful API for Tamaris Project",
+				// TermsOfService = "None",
+				Contact = new OpenApiContact()
+				{
+					Name = "John Doe",
+					Email = "dont@spam.me",
+					Url = new Uri("http://localhost/api/v1/")
+				},
+				License = new OpenApiLicense
+				{
+					Name = "ABC",
+					Url = new Uri("http://www.unicef.com")
+				}
+			};
+		}
 
-        /// <summary>
-        /// Enable middleware to serve generated Swagger as a JSON endpoint
-        /// </summary>
-        internal static void UseSwagger(IApplicationBuilder app)
-        {
-            app.UseSwagger();
+		/// <summary>
+		/// Enable middleware to serve generated Swagger as a JSON endpoint
+		/// </summary>
+		internal static void UseSwagger(IApplicationBuilder app)
+		{
+			app.UseSwagger();
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint(s).
-            app.UseSwaggerUI(c =>
-            {
+			// Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+			// specifying the Swagger JSON endpoint(s).
+			app.UseSwaggerUI(c =>
+			{
 				c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tamaris API v1");
-            });
-        }
+			});
+		}
 
 
 
@@ -118,5 +123,5 @@ namespace Tamaris.API.Configuration
 			return null;
 		}
 		#endregion Version number
-    }
+	}
 }

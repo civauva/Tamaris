@@ -38,8 +38,15 @@ namespace Tamaris.Web.Services.DataService
             var registrationResult = await _httpClient.PostAsJsonAsync("Admin/Users", user);
             var registrationContent = await registrationResult.Content.ReadAsStringAsync();
 
-            var result = JsonSerializer.Deserialize<UserForSelect>(registrationContent, _options);
-            return result;
+            if (registrationResult.IsSuccessStatusCode)
+            {
+                var result = JsonSerializer.Deserialize<UserForSelect>(registrationContent, _options);
+                return result;
+            }
+            else
+			{
+                throw new Exception(registrationContent);
+			}
 
 
             //if (!registrationResult.IsSuccessStatusCode && !string.IsNullOrEmpty(registrationContent))
@@ -54,7 +61,12 @@ namespace Tamaris.Web.Services.DataService
         public async Task ModifyUser(UserForUpdate user)
         {
             var modifyResult = await _httpClient.PutAsJsonAsync($"Admin/Users/{user.Id}", user);
-            // var modifyContent = await modifyResult.Content.ReadAsStringAsync();
+
+            if (!modifyResult.IsSuccessStatusCode)
+            {
+                var modifyContent = await modifyResult.Content.ReadAsStringAsync();
+                throw new Exception(modifyContent);
+            }
 
             return;
         }

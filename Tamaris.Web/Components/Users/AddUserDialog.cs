@@ -17,6 +17,9 @@ namespace Tamaris.Web.Components.Users
         [Parameter]
         public EventCallback<bool> CloseEventCallback { get; set; }
 
+        public string Error { get; set; }
+
+
         protected async override Task OnInitializedAsync()
         {
             Roles = (await AdminDataService.GetAllRoles()).ToList();
@@ -46,11 +49,18 @@ namespace Tamaris.Web.Components.Users
         {
             User.Roles = SelectedRoles;
 
-            await AdminDataService.AddUser(User);
-            ShowDialog = false;
+            try
+            {
+                await AdminDataService.AddUser(User);
+                ShowDialog = false;
 
-            await CloseEventCallback.InvokeAsync(true);
-            StateHasChanged();
+                await CloseEventCallback.InvokeAsync(true);
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Error = ex.Message;
+            }
         }
 
         #region Roles
