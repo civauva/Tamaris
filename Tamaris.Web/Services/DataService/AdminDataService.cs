@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
 using Tamaris.Domains.Admin;
+using Tamaris.Domains.DataShaping;
 
 namespace Tamaris.Web.Services.DataService
 {
@@ -8,9 +9,10 @@ namespace Tamaris.Web.Services.DataService
     {
         public AdminDataService(HttpClient httpClient): base(httpClient) {}
 
-        public async Task<IEnumerable<UserForSelect>> GetAllUsers()
+        public async Task<Tuple<IEnumerable<UserForSelect>, PaginationHeader>> GetAllUsers(int pageIndex, int pageSize)
         {
-            return await GetResultAsync<IEnumerable<UserForSelect>>($"Admin/Users");
+            var result = await GetResultAsync<IEnumerable<UserForSelect>>($"Admin/Users", pageIndex, pageSize);
+            return result;
         }
 
         public async Task<IEnumerable<UserForChat>> GetAllUsersForMessaging(string excludeUsername)

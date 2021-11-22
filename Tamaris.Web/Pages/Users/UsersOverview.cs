@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 
 using Tamaris.Domains.Admin;
+using Tamaris.Domains.DataShaping;
 using Tamaris.Web.Components.Users;
 using Tamaris.Web.Services.DataService;
 
@@ -11,6 +12,23 @@ namespace Tamaris.Web.Pages.Users
     {
         string ADMINISTRATION_ROLE = "Administrators";
 
+        public UsersOverview()
+        {
+            PageIndex = 1;
+            PageSize = 2;
+
+            Pagination = new PaginationHeader { PageSize = PageSize, CurrentPage = PageIndex };
+        }
+
+        #region Url Parameters
+        [Parameter]
+        public int PageIndex { get; set; }
+
+        [Parameter]
+        public int PageSize { get; set; }
+        #endregion Url Parameters
+
+
         [Inject]
         public IAdminDataService AdminDataService { get; set; }
 
@@ -18,9 +36,11 @@ namespace Tamaris.Web.Pages.Users
 
         protected AddUserDialog FormAddUser { get; set; }
 
+        public PaginationHeader Pagination { get; set; }
+
         protected async override Task OnInitializedAsync()
         {
-            Users = (await AdminDataService.GetAllUsers()).ToList();
+            await LoadUsers();
         }
 
         protected void QuickAddUser()
@@ -30,8 +50,25 @@ namespace Tamaris.Web.Pages.Users
 
         public async void AddUserDialog_OnDialogClose()
         {
-            Users = (await AdminDataService.GetAllUsers()).ToList();
+            await LoadUsers();
             StateHasChanged();
         }
+
+        private async Task LoadUsers()
+        {
+            var fetcher = await AdminDataService.GetAllUsers(PageIndex, PageSize);
+
+            if (fetcher != null)
+            {
+                Users = fetcher.Item1.ToList();
+                Pagination = fetcher.Item2;
+            }
+            else
+            {
+                Users = null;
+                Pagination = null;
+            }
+        }
+
     }
 }
